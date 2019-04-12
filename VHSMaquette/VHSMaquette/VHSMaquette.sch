@@ -1,0 +1,226 @@
+EESchema Schematic File Version 4
+LIBS:VHSMaquette-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_Nano_v3.x A1
+U 1 1 5C7436E1
+P 3150 2500
+F 0 "A1" H 3150 3700 50  0000 C CNN
+F 1 "Arduino_Nano_v3.x" H 3150 3800 50  0000 C CNN
+F 2 "Modules:Arduino_Nano" H 3300 1550 50  0001 L CNN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 3150 1500 50  0001 C CNN
+	1    3150 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW1
+U 1 1 5C743851
+P 1650 2200
+F 0 "SW1" H 1650 2422 50  0000 C CNN
+F 1 "SW_Reed" H 1650 2331 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x02_Pitch2.54mm" H 1650 2200 50  0001 C CNN
+F 3 "" H 1650 2200 50  0001 C CNN
+	1    1650 2200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW2
+U 1 1 5C7438D9
+P 1650 2550
+F 0 "SW2" H 1650 2772 50  0000 C CNN
+F 1 "SW_Reed" H 1650 2681 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x02_Pitch2.54mm" H 1650 2550 50  0001 C CNN
+F 3 "" H 1650 2550 50  0001 C CNN
+	1    1650 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW3
+U 1 1 5C74391C
+P 1650 2900
+F 0 "SW3" H 1650 3122 50  0000 C CNN
+F 1 "SW_Reed" H 1650 3031 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x02_Pitch2.54mm" H 1650 2900 50  0001 C CNN
+F 3 "" H 1650 2900 50  0001 C CNN
+	1    1650 2900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW4
+U 1 1 5C74395B
+P 1650 3250
+F 0 "SW4" H 1650 3472 50  0000 C CNN
+F 1 "SW_Reed" H 1650 3381 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x02_Pitch2.54mm" H 1650 3250 50  0001 C CNN
+F 3 "" H 1650 3250 50  0001 C CNN
+	1    1650 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW5
+U 1 1 5C74399A
+P 1650 3600
+F 0 "SW5" H 1650 3822 50  0000 C CNN
+F 1 "SW_Reed" H 1650 3731 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x02_Pitch2.54mm" H 1650 3600 50  0001 C CNN
+F 3 "" H 1650 3600 50  0001 C CNN
+	1    1650 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1450 3600 1450 3250
+Connection ~ 1450 2550
+Wire Wire Line
+	1450 2550 1450 2200
+Connection ~ 1450 2900
+Wire Wire Line
+	1450 2900 1450 2550
+Connection ~ 1450 3250
+Wire Wire Line
+	1450 3250 1450 2900
+Wire Wire Line
+	1450 3600 1450 3800
+Connection ~ 1450 3600
+$Comp
+L power:GND #PWR0101
+U 1 1 5C743B0A
+P 1450 3800
+F 0 "#PWR0101" H 1450 3550 50  0001 C CNN
+F 1 "GND" H 1455 3627 50  0000 C CNN
+F 2 "" H 1450 3800 50  0001 C CNN
+F 3 "" H 1450 3800 50  0001 C CNN
+	1    1450 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Motor:Motor_Servo M1
+U 1 1 5C743E8B
+P 1650 1700
+F 0 "M1" H 1646 1393 50  0000 C CNN
+F 1 "Motor_Servo" H 1646 1484 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_1x03_Pitch2.54mm" H 1650 1510 50  0001 C CNN
+F 3 "http://forums.parallax.com/uploads/attachments/46831/74481.png" H 1650 1510 50  0001 C CNN
+	1    1650 1700
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+5V #PWR0102
+U 1 1 5C74406A
+P 1950 1700
+F 0 "#PWR0102" H 1950 1550 50  0001 C CNN
+F 1 "+5V" V 1965 1828 50  0000 L CNN
+F 2 "" H 1950 1700 50  0001 C CNN
+F 3 "" H 1950 1700 50  0001 C CNN
+	1    1950 1700
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+5V #PWR0103
+U 1 1 5C7440AF
+P 3350 1500
+F 0 "#PWR0103" H 3350 1350 50  0001 C CNN
+F 1 "+5V" H 3365 1673 50  0000 C CNN
+F 2 "" H 3350 1500 50  0001 C CNN
+F 3 "" H 3350 1500 50  0001 C CNN
+	1    3350 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0104
+U 1 1 5C7441D4
+P 1950 1600
+F 0 "#PWR0104" H 1950 1350 50  0001 C CNN
+F 1 "GND" V 1955 1472 50  0000 R CNN
+F 2 "" H 1950 1600 50  0001 C CNN
+F 3 "" H 1950 1600 50  0001 C CNN
+	1    1950 1600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0105
+U 1 1 5C744217
+P 3250 3500
+F 0 "#PWR0105" H 3250 3250 50  0001 C CNN
+F 1 "GND" H 3255 3327 50  0000 C CNN
+F 2 "" H 3250 3500 50  0001 C CNN
+F 3 "" H 3250 3500 50  0001 C CNN
+	1    3250 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0106
+U 1 1 5C74423C
+P 3150 3500
+F 0 "#PWR0106" H 3150 3250 50  0001 C CNN
+F 1 "GND" H 3155 3327 50  0000 C CNN
+F 2 "" H 3150 3500 50  0001 C CNN
+F 3 "" H 3150 3500 50  0001 C CNN
+	1    3150 3500
+	1    0    0    -1  
+$EndComp
+NoConn ~ 3050 1500
+NoConn ~ 3650 1900
+NoConn ~ 3650 2000
+NoConn ~ 3650 2300
+NoConn ~ 3650 2500
+NoConn ~ 3650 2600
+NoConn ~ 3650 2700
+NoConn ~ 3650 2800
+NoConn ~ 3650 2900
+NoConn ~ 3650 3000
+NoConn ~ 3650 3100
+NoConn ~ 3650 3200
+Wire Wire Line
+	1950 1800 2500 1800
+Wire Wire Line
+	1850 2200 2650 2200
+Wire Wire Line
+	1850 2550 1900 2550
+Wire Wire Line
+	1900 2550 1900 2300
+Wire Wire Line
+	1900 2300 2650 2300
+Wire Wire Line
+	1850 2900 2000 2900
+Wire Wire Line
+	2000 2900 2000 2400
+Wire Wire Line
+	2000 2400 2650 2400
+Wire Wire Line
+	1850 3250 2100 3250
+Wire Wire Line
+	2100 3250 2100 2500
+Wire Wire Line
+	2100 2500 2650 2500
+Wire Wire Line
+	1850 3600 2200 3600
+Wire Wire Line
+	2200 3600 2200 2600
+Wire Wire Line
+	2200 2600 2650 2600
+NoConn ~ 2650 2700
+NoConn ~ 2650 2900
+NoConn ~ 2650 3000
+NoConn ~ 2650 3100
+NoConn ~ 2650 3200
+NoConn ~ 3250 1500
+NoConn ~ 2650 1900
+NoConn ~ 2650 2000
+Wire Wire Line
+	2500 1800 2500 2800
+Wire Wire Line
+	2500 2800 2650 2800
+$EndSCHEMATC
