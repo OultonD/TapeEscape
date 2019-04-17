@@ -153,24 +153,77 @@ void ask(Path p)
 void setQuestions() // ZERO INDEXED, SORRY
 {
 
-  pathList[0].setQuestion(0, "Question 1: ", "Who");
-  pathList[0].setQuestion(1, "Q2", "What");
-  pathList[0].setQuestion(2, "Q3", "Where");
-  pathList[0].setQuestion(3, "Q4", "When");
+  pathList[0].setQuestion(0, "Question 1:", "True or False?");
+  pathList[0].setQuestion(1, "Question 2:", "True or False?");
+  pathList[0].setQuestion(2, "Question 3:", "True or False?");
+  pathList[0].setQuestion(3, "Question 4:", "True or False?");
   pathList[0].setCorrectResult("Correct!");
   pathList[0].setIncorrectResult("Incorrect");
   bool key0[] = {true, true, true, true};
   pathList[0].setAnswerKey(key0);
   
-  
-  pathList[1].setQuestion(0, "Q1: ", "Who");
-  pathList[1].setQuestion(1, "Question 2", "What");
-  pathList[1].setQuestion(2, "Q3", "Where");
-  pathList[1].setQuestion(3, "Q4", "When");
+  pathList[1].setQuestion(0, "Question 1:", "True or False?");
+  pathList[1].setQuestion(1, "Question 2:", "True or False?");
+  pathList[1].setQuestion(2, "Question 3:", "True or False?");
+  pathList[1].setQuestion(3, "Question 4:", "True or False?");
   pathList[1].setCorrectResult("Correct!");
   pathList[1].setIncorrectResult("Incorrect");
   bool key1[] = {true, true, true, true};
   pathList[1].setAnswerKey(key1);
+
+  pathList[2].setQuestion(0, "Question 1:", "True or False?");
+  pathList[2].setQuestion(1, "Question 2:", "True or False?");
+  pathList[2].setQuestion(2, "Question 3:", "True or False?");
+  pathList[2].setQuestion(3, "Question 4:", "True or False?");
+  pathList[2].setCorrectResult("Correct!");
+  pathList[2].setIncorrectResult("Incorrect");
+  bool key2[] = {true, true, true, true};
+  pathList[2].setAnswerKey(key2);
+
+  pathList[3].setQuestion(0, "Question 1:", "True or False?");
+  pathList[3].setQuestion(1, "Question 2:", "True or False?");
+  pathList[3].setQuestion(2, "Question 3:", "True or False?");
+  pathList[3].setQuestion(3, "Question 4:", "True or False?");
+  pathList[3].setCorrectResult("Correct!");
+  pathList[3].setIncorrectResult("Incorrect");
+  bool key3[] = {true, true, true, true};
+  pathList[3].setAnswerKey(key3);
+
+  pathList[4].setQuestion(0, "Question 1:", "True or False?");
+  pathList[4].setQuestion(1, "Question 2:", "True or False?");
+  pathList[4].setQuestion(2, "Question 3:", "True or False?");
+  pathList[4].setQuestion(3, "Question 4:", "True or False?");
+  pathList[4].setCorrectResult("Correct!");
+  pathList[4].setIncorrectResult("Incorrect");
+  bool key4[] = {true, true, true, true};
+  pathList[4].setAnswerKey(key4);
+
+  pathList[5].setQuestion(0, "Question 1:", "True or False?");
+  pathList[5].setQuestion(1, "Question 2:", "True or False?");
+  pathList[5].setQuestion(2, "Question 3:", "True or False?");
+  pathList[5].setQuestion(3, "Question 4:", "True or False?");
+  pathList[5].setCorrectResult("Correct!");
+  pathList[5].setIncorrectResult("Incorrect");
+  bool key5[] = {true, true, true, true};
+  pathList[5].setAnswerKey(key5);
+  
+  pathList[6].setQuestion(0, "Question 1:", "True or False?");
+  pathList[6].setQuestion(1, "Question 2:", "True or False?");
+  pathList[6].setQuestion(2, "Question 3:", "True or False?");
+  pathList[6].setQuestion(3, "Question 4:", "True or False?");
+  pathList[6].setCorrectResult("Correct!");
+  pathList[6].setIncorrectResult("Incorrect");
+  bool key6[] = {true, true, true, true};
+  pathList[6].setAnswerKey(key6);
+
+  pathList[7].setQuestion(0, "Question 1:", "True or False?");
+  pathList[7].setQuestion(1, "Question 2:", "True or False?");
+  pathList[7].setQuestion(2, "Question 3:", "True or False?");
+  pathList[7].setQuestion(3, "Question 4:", "True or False?");
+  pathList[7].setCorrectResult("Correct!");
+  pathList[7].setIncorrectResult("Incorrect");
+  bool key7[] = {true, true, true, true};
+  pathList[7].setAnswerKey(key7);
 }
 
 void setupLCD()
