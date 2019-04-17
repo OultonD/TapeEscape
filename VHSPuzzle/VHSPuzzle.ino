@@ -1,39 +1,29 @@
-#include <Servo.h>
 
-#define SW_1 3
-#define SW_2 4
-#define SW_3 5
-#define SW_4 6 
-#define SW_5 7
-#define SERVO_PIN 2
-#define SERVO_START 0
-#define SERVO_END 180 //in degrees
-
-const byte switchMask = B11111000;
-byte result = 0;
-
-Servo s;
-int pos = 0;
+#define SW_1 2
+#define SW_2 A0
+#define SW_3 A1
+#define SW_4 A2
+#define SW_5 A3
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
-  s.attach(SERVO_PIN);
-  DDRD = DDRD & ~switchMask; //set switches to input
-  PORTD = PORTD | switchMask; //toggle pullups
+  Serial.begin(9600);
+  pinMode(SW_1, INPUT_PULLUP);
+  pinMode(SW_2, INPUT_PULLUP);
+  pinMode(SW_3, INPUT_PULLUP);
+  pinMode(SW_4, INPUT_PULLUP);
+  pinMode(SW_5, INPUT_PULLUP);
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
- result = ~PIND & switchMask;
- Serial.println(result, BIN);
- if(result == switchMask)
- {
-  s.write(SERVO_END); //move the servo to open destination
- }
- else
- {
-  s.write(SERVO_START);
- }
+
+Serial.print(digitalRead(SW_1));
+Serial.print(digitalRead(SW_2));
+Serial.print(digitalRead(SW_3));
+Serial.print(digitalRead(SW_4));
+Serial.print(digitalRead(SW_5));
+Serial.println();
+
 }
 
