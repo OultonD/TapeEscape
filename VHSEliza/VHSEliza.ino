@@ -29,7 +29,7 @@ Button encButton(A3);
 
 unsigned long currentMillis = 0;
 unsigned long prevMillis = 0;
-int fadeInterval = 100;
+int fadeInterval = 10;
 int fadeIncrement = 1;
 bool fadeDir = true; //true for up, false for down
 byte brightness = 0;
@@ -55,7 +55,7 @@ void setup() {
 
   setQuestions();
   setupLCD();
-
+  ledON();
   enc.write(1);
 
 }
@@ -299,11 +299,11 @@ void pulse()
   {
     if(brightness + fadeIncrement > 255)
     {
-      fadeDir != fadeDir;
+      fadeDir = false;
     }
     if(brightness - fadeIncrement < 0)
     {
-      fadeDir != fadeDir;
+      fadeDir = true;
     }
     
     if(fadeDir)
@@ -314,6 +314,7 @@ void pulse()
     {
       brightness -= fadeIncrement;
     }
+prevMillis = currentMillis;
   }
 analogWrite(trueLED, brightness);
 analogWrite(falseLED, brightness);
