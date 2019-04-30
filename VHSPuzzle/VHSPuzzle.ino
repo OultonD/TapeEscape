@@ -8,6 +8,7 @@
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial.println("On");
   pinMode(SW_1, INPUT_PULLUP);
   pinMode(SW_2, INPUT_PULLUP);
   pinMode(SW_3, INPUT_PULLUP);
@@ -24,6 +25,6 @@ Serial.print(digitalRead(SW_3));
 Serial.print(digitalRead(SW_4));
 Serial.print(digitalRead(SW_5));
 Serial.println();
-
+delay(50);
 }
 
