@@ -324,7 +324,7 @@ MOSI
 Text Label 8100 3850 2    50   ~ 0
 MISO
 Text Label 8100 3950 2    50   ~ 0
-CS
+SDCS
 $Comp
 L power:GND #PWR0120
 U 1 1 5C96841A

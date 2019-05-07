@@ -37,17 +37,6 @@ F 3 "~" H 4100 1500 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Connector:Conn_01x03_Female +5V1
-U 1 1 5C966402
-P 4750 1500
-F 0 "+5V1" H 4550 2000 50  0000 L CNN
-F 1 "Conn_01x03_Female" H 4250 1900 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 4750 1500 50  0001 C CNN
-F 3 "~" H 4750 1500 50  0001 C CNN
-	1    4750 1500
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR0102
 U 1 1 5C966AA8
 P 3900 1400
@@ -113,39 +102,6 @@ F 3 "" H 6350 1450 50  0001 C CNN
 	1    6350 1450
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:+5V #PWR0110
-U 1 1 5C966CA7
-P 4550 1400
-F 0 "#PWR0110" H 4550 1250 50  0001 C CNN
-F 1 "+5V" V 4565 1528 50  0000 L CNN
-F 2 "" H 4550 1400 50  0001 C CNN
-F 3 "" H 4550 1400 50  0001 C CNN
-	1    4550 1400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+5V #PWR0111
-U 1 1 5C966CBD
-P 4550 1500
-F 0 "#PWR0111" H 4550 1350 50  0001 C CNN
-F 1 "+5V" V 4565 1628 50  0000 L CNN
-F 2 "" H 4550 1500 50  0001 C CNN
-F 3 "" H 4550 1500 50  0001 C CNN
-	1    4550 1500
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:+5V #PWR0112
-U 1 1 5C966CD3
-P 4550 1600
-F 0 "#PWR0112" H 4550 1450 50  0001 C CNN
-F 1 "+5V" V 4565 1728 50  0000 L CNN
-F 2 "" H 4550 1600 50  0001 C CNN
-F 3 "" H 4550 1600 50  0001 C CNN
-	1    4550 1600
-	0    -1   -1   0   
-$EndComp
 Text Label 5650 2150 2    50   ~ 0
 DREQ
 Text Label 5650 2250 2    50   ~ 0
@@ -161,29 +117,29 @@ MISO
 Text Label 5650 3150 2    50   ~ 0
 SCK
 $Comp
-L Connector:Conn_01x07_Female J6
+L Connector:Conn_01x08_Female J6
 U 1 1 5C966EAB
-P 8300 2750
-F 0 "J6" H 8327 2776 50  0000 L CNN
-F 1 "Conn_01x07_Female" H 8327 2685 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x07_Pitch2.54mm" H 8300 2750 50  0001 C CNN
-F 3 "~" H 8300 2750 50  0001 C CNN
-	1    8300 2750
+P 9350 2750
+F 0 "J6" H 9377 2776 50  0000 L CNN
+F 1 "Conn_01x07_Female" H 9377 2685 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x08_Pitch2.54mm" H 9350 2750 50  0001 C CNN
+F 3 "~" H 9350 2750 50  0001 C CNN
+	1    9350 2750
 	1    0    0    -1  
 $EndComp
-Text Label 8100 2450 2    50   ~ 0
+Text Label 9150 2450 2    50   ~ 0
 COL1
-Text Label 8100 2550 2    50   ~ 0
+Text Label 9150 2550 2    50   ~ 0
 COL2
-Text Label 8100 2650 2    50   ~ 0
+Text Label 9150 2650 2    50   ~ 0
 COL3
-Text Label 8100 2750 2    50   ~ 0
+Text Label 9150 2750 2    50   ~ 0
 ROW1
-Text Label 8100 2850 2    50   ~ 0
+Text Label 9150 2850 2    50   ~ 0
 ROW2
-Text Label 8100 2950 2    50   ~ 0
+Text Label 9150 2950 2    50   ~ 0
 ROW3
-Text Label 8100 3050 2    50   ~ 0
+Text Label 9150 3050 2    50   ~ 0
 ROW4
 Text Label 6650 2850 0    50   ~ 0
 SDA
@@ -262,40 +218,6 @@ Text Label 5650 1950 2    50   ~ 0
 TX
 Text Label 5650 1850 2    50   ~ 0
 RX
-$Comp
-L Connector:Conn_01x03_Female SCL1
-U 1 1 5C967868
-P 7750 1950
-F 0 "SCL1" H 7643 1717 50  0000 C CNN
-F 1 "Conn_01x03_Female" H 7643 1626 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 7750 1950 50  0001 C CNN
-F 3 "~" H 7750 1950 50  0001 C CNN
-	1    7750 1950
-	1    0    0    -1  
-$EndComp
-Text Label 7550 1850 2    50   ~ 0
-SCL
-Text Label 7550 1950 2    50   ~ 0
-SCL
-Text Label 7550 2050 2    50   ~ 0
-SCL
-$Comp
-L Connector:Conn_01x03_Female SDA1
-U 1 1 5C967B41
-P 8250 1950
-F 0 "SDA1" H 8277 1976 50  0000 L CNN
-F 1 "Conn_01x03_Female" H 8277 1885 50  0000 L CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 8250 1950 50  0001 C CNN
-F 3 "~" H 8250 1950 50  0001 C CNN
-	1    8250 1950
-	1    0    0    -1  
-$EndComp
-Text Label 8050 1850 2    50   ~ 0
-SDA
-Text Label 8050 1950 2    50   ~ 0
-SDA
-Text Label 8050 2050 2    50   ~ 0
-SDA
 $Comp
 L Connector:Conn_01x10_Female J7
 U 1 1 5C9681BB
@@ -510,5 +432,261 @@ F 3 "" H 6250 1450 50  0001 C CNN
 	1    6250 1450
 	1    0    0    -1  
 $EndComp
-NoConn ~ 5650 2550
+Text Label 5650 2550 2    50   ~ 0
+D7
+Text Label 9150 3150 2    50   ~ 0
+D7
+$Comp
+L Device:CP C1
+U 1 1 5CC8AB38
+P 4400 2000
+F 0 "C1" V 4655 2000 50  0000 C CNN
+F 1 "CP" V 4564 2000 50  0000 C CNN
+F 2 "Capacitors_THT:CP_Radial_D5.0mm_P2.00mm" H 4438 1850 50  0001 C CNN
+F 3 "~" H 4400 2000 50  0001 C CNN
+	1    4400 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+5V #PWR0124
+U 1 1 5CC8B022
+P 4250 2000
+F 0 "#PWR0124" H 4250 1850 50  0001 C CNN
+F 1 "+5V" V 4265 2128 50  0000 L CNN
+F 2 "" H 4250 2000 50  0001 C CNN
+F 3 "" H 4250 2000 50  0001 C CNN
+	1    4250 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0125
+U 1 1 5CC8B11C
+P 4550 2000
+F 0 "#PWR0125" H 4550 1750 50  0001 C CNN
+F 1 "GND" V 4555 1872 50  0000 R CNN
+F 2 "" H 4550 2000 50  0001 C CNN
+F 3 "" H 4550 2000 50  0001 C CNN
+	1    4550 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x03_Female SRVO1
+U 1 1 5CC8C44F
+P 9500 1950
+F 0 "SRVO1" H 9527 1976 50  0000 L CNN
+F 1 "Conn_01x03_Female" H 9527 1885 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm" H 9500 1950 50  0001 C CNN
+F 3 "~" H 9500 1950 50  0001 C CNN
+	1    9500 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0126
+U 1 1 5CC8C92B
+P 9300 1950
+F 0 "#PWR0126" H 9300 1800 50  0001 C CNN
+F 1 "+5V" V 9315 2078 50  0000 L CNN
+F 2 "" H 9300 1950 50  0001 C CNN
+F 3 "" H 9300 1950 50  0001 C CNN
+	1    9300 1950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0127
+U 1 1 5CC8CCEB
+P 9300 1850
+F 0 "#PWR0127" H 9300 1600 50  0001 C CNN
+F 1 "GND" V 9305 1722 50  0000 R CNN
+F 2 "" H 9300 1850 50  0001 C CNN
+F 3 "" H 9300 1850 50  0001 C CNN
+	1    9300 1850
+	0    1    1    0   
+$EndComp
+Text Label 9300 2050 2    50   ~ 0
+COL2
+$Comp
+L Connector:Conn_01x04_Female J4
+U 1 1 5CC8D72B
+P 7600 1250
+F 0 "J4" H 7627 1226 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 7627 1135 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7600 1250 50  0001 C CNN
+F 3 "~" H 7600 1250 50  0001 C CNN
+	1    7600 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0110
+U 1 1 5CC8D8AD
+P 7400 1250
+F 0 "#PWR0110" H 7400 1100 50  0001 C CNN
+F 1 "+5V" V 7415 1378 50  0000 L CNN
+F 2 "" H 7400 1250 50  0001 C CNN
+F 3 "" H 7400 1250 50  0001 C CNN
+	1    7400 1250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0111
+U 1 1 5CC8D938
+P 7400 1150
+F 0 "#PWR0111" H 7400 900 50  0001 C CNN
+F 1 "GND" V 7405 1022 50  0000 R CNN
+F 2 "" H 7400 1150 50  0001 C CNN
+F 3 "" H 7400 1150 50  0001 C CNN
+	1    7400 1150
+	0    1    1    0   
+$EndComp
+Text Label 7400 1350 2    50   ~ 0
+SDA
+Text Label 7400 1450 2    50   ~ 0
+SCL
+$Comp
+L Connector:Conn_01x04_Female J5
+U 1 1 5CC8DBFE
+P 7600 1700
+F 0 "J5" H 7627 1676 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 7627 1585 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7600 1700 50  0001 C CNN
+F 3 "~" H 7600 1700 50  0001 C CNN
+	1    7600 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0112
+U 1 1 5CC8DC04
+P 7400 1700
+F 0 "#PWR0112" H 7400 1550 50  0001 C CNN
+F 1 "+5V" V 7415 1828 50  0000 L CNN
+F 2 "" H 7400 1700 50  0001 C CNN
+F 3 "" H 7400 1700 50  0001 C CNN
+	1    7400 1700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0128
+U 1 1 5CC8DC0A
+P 7400 1600
+F 0 "#PWR0128" H 7400 1350 50  0001 C CNN
+F 1 "GND" V 7405 1472 50  0000 R CNN
+F 2 "" H 7400 1600 50  0001 C CNN
+F 3 "" H 7400 1600 50  0001 C CNN
+	1    7400 1600
+	0    1    1    0   
+$EndComp
+Text Label 7400 1800 2    50   ~ 0
+SDA
+Text Label 7400 1900 2    50   ~ 0
+SCL
+$Comp
+L Connector:Conn_01x04_Female J11
+U 1 1 5CC8DD23
+P 7600 2150
+F 0 "J11" H 7627 2126 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 7627 2035 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7600 2150 50  0001 C CNN
+F 3 "~" H 7600 2150 50  0001 C CNN
+	1    7600 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0129
+U 1 1 5CC8DD29
+P 7400 2150
+F 0 "#PWR0129" H 7400 2000 50  0001 C CNN
+F 1 "+5V" V 7415 2278 50  0000 L CNN
+F 2 "" H 7400 2150 50  0001 C CNN
+F 3 "" H 7400 2150 50  0001 C CNN
+	1    7400 2150
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0130
+U 1 1 5CC8DD2F
+P 7400 2050
+F 0 "#PWR0130" H 7400 1800 50  0001 C CNN
+F 1 "GND" V 7405 1922 50  0000 R CNN
+F 2 "" H 7400 2050 50  0001 C CNN
+F 3 "" H 7400 2050 50  0001 C CNN
+	1    7400 2050
+	0    1    1    0   
+$EndComp
+Text Label 7400 2250 2    50   ~ 0
+SDA
+Text Label 7400 2350 2    50   ~ 0
+SCL
+$Comp
+L Connector:Conn_01x04_Female J12
+U 1 1 5CC8DD37
+P 7600 2600
+F 0 "J12" H 7627 2576 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 7627 2485 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7600 2600 50  0001 C CNN
+F 3 "~" H 7600 2600 50  0001 C CNN
+	1    7600 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0131
+U 1 1 5CC8DD3D
+P 7400 2600
+F 0 "#PWR0131" H 7400 2450 50  0001 C CNN
+F 1 "+5V" V 7415 2728 50  0000 L CNN
+F 2 "" H 7400 2600 50  0001 C CNN
+F 3 "" H 7400 2600 50  0001 C CNN
+	1    7400 2600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0132
+U 1 1 5CC8DD43
+P 7400 2500
+F 0 "#PWR0132" H 7400 2250 50  0001 C CNN
+F 1 "GND" V 7405 2372 50  0000 R CNN
+F 2 "" H 7400 2500 50  0001 C CNN
+F 3 "" H 7400 2500 50  0001 C CNN
+	1    7400 2500
+	0    1    1    0   
+$EndComp
+Text Label 7400 2700 2    50   ~ 0
+SDA
+Text Label 7400 2800 2    50   ~ 0
+SCL
+$Comp
+L Connector:Conn_01x04_Female J3
+U 1 1 5CC8DE92
+P 7600 800
+F 0 "J3" H 7627 776 50  0000 L CNN
+F 1 "Conn_01x04_Female" H 7627 685 50  0000 L CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x04_Pitch2.54mm" H 7600 800 50  0001 C CNN
+F 3 "~" H 7600 800 50  0001 C CNN
+	1    7600 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0133
+U 1 1 5CC8DE98
+P 7400 800
+F 0 "#PWR0133" H 7400 650 50  0001 C CNN
+F 1 "+5V" V 7415 928 50  0000 L CNN
+F 2 "" H 7400 800 50  0001 C CNN
+F 3 "" H 7400 800 50  0001 C CNN
+	1    7400 800 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0134
+U 1 1 5CC8DE9E
+P 7400 700
+F 0 "#PWR0134" H 7400 450 50  0001 C CNN
+F 1 "GND" V 7405 572 50  0000 R CNN
+F 2 "" H 7400 700 50  0001 C CNN
+F 3 "" H 7400 700 50  0001 C CNN
+	1    7400 700 
+	0    1    1    0   
+$EndComp
+Text Label 7400 900  2    50   ~ 0
+SDA
+Text Label 7400 1000 2    50   ~ 0
+SCL
 $EndSCHEMATC

@@ -11,18 +11,18 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 313)
+    (start_pass_no 223)
     (layer_rule F.Cu
-      (active on)
-      (preferred_direction vertical)
-      (preferred_direction_trace_costs 1.0)
-      (against_preferred_direction_trace_costs 2.2)
-    )
-    (layer_rule B.Cu
       (active on)
       (preferred_direction horizontal)
       (preferred_direction_trace_costs 1.0)
-      (against_preferred_direction_trace_costs 1.8)
+      (against_preferred_direction_trace_costs 2.0)
+    )
+    (layer_rule B.Cu
+      (active on)
+      (preferred_direction vertical)
+      (preferred_direction_trace_costs 1.0)
+      (against_preferred_direction_trace_costs 2.0)
     )
   )
   (rule
@@ -74,9 +74,9 @@
   )
   (class "kicad_default"
     /SCK /MISO /MOSI /XCS "Net-(A1-Pad28)" /XRESET /XDCS "Net-(A1-Pad26)"
-    "Net-(A1-Pad10)" "Net-(A1-Pad25)" /COL3 /SCL /COL2 /SDA /SDCS /ROW4
-    /DREQ /ROW3 /COL1 /ROW2 /ROW1 "Net-(A1-Pad3)" "Net-(A1-Pad18)" /RX
-    /TX /CS "Net-(J9-Pad1)" "Net-(J10-Pad1)" +3V3
+    "Net-(A1-Pad25)" /COL3 /SCL /COL2 /SDA /SDCS /ROW4 /DREQ
+    /ROW3 /COL1 /ROW2 /ROW1 "Net-(A1-Pad3)" "Net-(A1-Pad18)" /RX /TX
+    "Net-(J9-Pad1)" "Net-(J10-Pad1)" +3V3 /D7
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
