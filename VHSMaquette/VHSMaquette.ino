@@ -18,26 +18,30 @@ Adafruit_VS1053_FilePlayer musicPlayer =
   // create breakout-example object!
   Adafruit_VS1053_FilePlayer(BREAKOUT_RESET, BREAKOUT_CS, BREAKOUT_DCS, DREQ, CARDCS);
 
-#include <Servo.h>
-#include <Button.h>
+#include <Keypad.h>
 
-#define SW_1 A0
-#define SW_2 A1
-#define SW_3 A2
-#define SW_4 A3
-#define SW_5 2
+const byte ROWS = 2; //four rows
+const byte COLS = 4; //three columns
+char keys[ROWS][COLS] = {
+    {'1','2','3','4'},
+    {'P','R','F','E'} //PLAY, RWD, FFW, EJECT
+};
+
+byte rowPins[ROWS] = {2, 7}; //connect to the row pinouts of the keypad
+byte colPins[COLS] = {A0, A1, A2, A3}; //connect to the column pinouts of the keypad
+
+Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+
+#include <Servo.h>
+
 #define SERVO_PIN 5
 #define SERVO_START 0
 #define SERVO_END 90 //in degrees
 
-Button b1(SW_1);
-Button b2(SW_2);
-Button b3(SW_3);
-Button b4(SW_4);
-Button b5(SW_5);
+#define LED 6
 
 bool result = true;
-int answers[4];
+int answers[] = {0,0,0,0};
 int key[] = {1,2,3,4}; //answer key
 
 Servo s;
@@ -71,52 +75,76 @@ void setup() {
   
 
   s.attach(SERVO_PIN);
+  s.write(SERVO_START);
   Serial.println("Servo Set");
-  b1.begin();
-  b2.begin();
-  b3.begin();
-  b4.begin();
-  b5.begin();
+
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, HIGH);
+
+  keypad.addEventListener(keypadEvent);
 }
 
 void loop() {
-  Serial.println("entered loop");
-    s.write(SERVO_START);
-  // put your main code here, to run repeatedly:
- for(int i=0; i<4; i++)
- {
-   bool _b1 = false;
-   bool _b2 = false;
-   bool _b3 = false;
-   bool _b4 = false;
-   bool _b5 = false;
- 
-   do{
-    _b1 = b1.pressed();
-    _b2 = b2.pressed();
-    _b3 = b3.pressed();
-    _b4 = b4.pressed();
-    _b5 = b5.pressed();
-   }while(!_b1 && !_b2 && !_b3 && !_b4 && !_b5);
-   
-   if(_b1){
-    answers[i] = 1;
-   }
-   if(_b2){
-    answers[i] = 2;
-   }
-   if(_b3){
-    answers[i] = 3;
-   }
-   if(_b4){
-    answers[i] = 4;
-   }
-   if(_b5){
-    answers[i] = 5;
-   }
-   Serial.println(answers[i]);
- }
- checkResult();
+    char key = keypad.getKey();
+
+    
+}
+
+void keypadEvent(KeypadEvent key){
+    switch (keypad.getState()){
+    case PRESSED:
+         switch (key){
+          case '1':
+            shiftAnswers();
+            answers[3] = 1;
+            checkResult();
+            break;
+          case '2':
+            shiftAnswers();
+            answers[3] = 2;
+            checkResult();
+            break;            
+          case '3':
+            shiftAnswers();
+            answers[3] = 3;
+            checkResult();
+            break;
+          case '4':
+            shiftAnswers();
+            answers[3] = 4;
+            checkResult();
+            break;
+          case 'P':
+            PLAY();
+            break;
+          case 'R':
+            REWIND();
+            break;
+          case 'F':
+            FASTFORWARD();
+            break;
+          case 'E':
+            EJECT();
+            break;
+          default:
+            break;
+         }  
+
+    case RELEASED:
+        break;
+
+    case HOLD:
+        break;
+
+  }
+}
+
+void shiftAnswers() 
+{
+  answers[0] = answers[1]; //to enable a rolling check of the last 4 keypresses
+  answers[1] = answers[2]; //shift the last 3 presses left by 1.
+  answers[2] = answers[3];
+  answers[3] = 0;
 }
 
 void checkResult()
@@ -132,40 +160,48 @@ void checkResult()
     if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
     Serial.println("Error opening file");
     }
-    while(!b5.pressed())
-    {
-      delay(10);
-    }
-    openDoor();
-    while(!b5.pressed())
-    {
-      delay(10);
-    }
   }
   else
   {
-    //play failure file
-    if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
+    if(answers[0] != 0)
+    {
+          if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
+            Serial.println("Error opening file");
+          }
+    }
+  }
+}
+  
+void PLAY()
+{
+  if (! musicPlayer.startPlayingFile("PLAY.MP3")) {
     Serial.println("Error opening file");
   }
-  }
-  
 }
 
-void openDoor()
+void REWIND()
 {
-  if (! musicPlayer.startPlayingFile("FFWD.MP3")) {
-  Serial.println("Error opening file");
+  if (! musicPlayer.startPlayingFile("REWIND.MP3")) {
+    Serial.println("Error opening file");
   }
-  delay(6100);
-  Serial.println("Moving servo");
-  for(int i = SERVO_START; i<SERVO_END; i++)
-  {
-    s.write(i);
-    delay(135);
+}
+
+void FASTFORWARD()
+{
+  if (! musicPlayer.startPlayingFile("FASTFORWARD.MP3")) {
+    Serial.println("Error opening file");
   }
-  Serial.println("done");
-  delay(1000);
+  for(int i = 0; i<5; i++){
+    digitalWrite(LED, LOW);
+    delay(100);
+    digitalWrite(LED, HIGH);
+    delay(100);
+  }
+}
+
+void EJECT()
+{
+  s.write(SERVO_END);
 }
 
 /// File listing helper
