@@ -1,3 +1,9 @@
+ /* Included 3rd party Libraries:
+ * Keypad.h - https://github.com/Chris--A/Keypad
+ * Adafruit_VS1053.h **Compiled with version 1.07** - https://github.com/adafruit/Adafruit_VS1053_Library
+ *                   1.08 should work fine though
+ */
+
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
 #include <Adafruit_VS1053.h>

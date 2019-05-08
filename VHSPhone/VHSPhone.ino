@@ -1,3 +1,15 @@
+/* Included 3rd Party Libraries:
+ * Button.h - https://github.com/madleech/Button
+ * LiquidCrystal_PCF8574.h - https://github.com/mathertel/LiquidCrystal_PCF8574
+ * Encoder.h - https://github.com/PaulStoffregen/Encoder
+ */
+
+ /* Included Libraries:
+ * Keypad.h - https://github.com/Chris--A/Keypad
+ * Adafruit_VS1053.h **Compiled with version 1.07** - https://github.com/adafruit/Adafruit_VS1053_Library
+ *                   1.08 should work fine though
+ */
+
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
 #include <Adafruit_VS1053.h>
@@ -63,7 +75,7 @@ void setup(){
   printDirectory(SD.open("/"), 0);
   
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(40,40);
+  musicPlayer.setVolume(20,20);
 
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
