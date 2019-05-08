@@ -33,7 +33,6 @@ Encoder enc(2, A2);
 #define SERVO_END 90 //in degrees
 
 #define AM_FM 7 //AM/FM Switch
-bool isFM = false;
 
 #define AMMAX 1700
 #define AMMIN 540
@@ -45,13 +44,82 @@ int amFreq = AMMIN;
 #define FMSTEP 2 //in hundreds of khz
 int fmFreq = FMMIN;
 
+int encLastRead = 0;
+int encCurrRead = 0;
+
 void setup() {
+  Serial.begin(115200);
   // put your setup code here, to run once:
   pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
-  isFM = digitalRead(AM_FM);
+  
+  if(isFM()){
+    enc.write(fmFreq);
+  }else{
+    enc.write(amFreq);
+  }
+  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  readEnc();
+  updateDisplay();
+//  playbackFile();
 }
+
+void updateDisplay(){
+  lcd.home();
+  lcd.clear();
+  if(isFM()){
+    if(fmFreq >999){
+      lcd.setCursor(2,0);
+    }else{
+      lcd.setCursor(1,0);
+    }
+    float freq = fmFreq/10.0;
+    String s = String(freq);
+    s += "FM";
+    lcd.print(s);
+  }else{
+    
+  }
+}
+
+void readEnc(){
+  encCurrRead = enc.read();
+  
+  if(isFM()){ //FM dial
+    if(encCurrRead > encLastRead){
+      fmFreq += FMSTEP;
+    }else if(encCurrRead < encLastRead){
+      fmFreq -= FMSTEP;
+    }
+    if(fmFreq < FMMIN){
+      fmFreq = FMMAX;
+    }
+    if(fmFreq > FMMAX){
+      fmFreq = FMMIN;
+    }
+    Serial.println(fmFreq);
+  }else{      //AM dial
+    if(encCurrRead > encLastRead){
+      amFreq += AMSTEP;
+    }else if(encCurrRead < encLastRead){
+      amFreq -= AMSTEP;
+    }
+    if(amFreq < AMMIN){
+      amFreq = AMMAX;
+    }
+    if(amFreq > AMMAX){
+      amFreq = AMMIN;
+    }
+    Serial.println(amFreq);
+  }
+  encLastRead = encCurrRead;
+}
+
+bool isFM()
+{
+  return digitalRead(AM_FM);
+}
+
