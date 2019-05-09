@@ -56,7 +56,7 @@ bool Path::checkResult(bool answers[])
   bool result = true;
   for(int i = 0; i<numQuestions; i++)
   {
-    result = result && answers[i] && _answerKey[i];
+    result = result && (answers[i] == _answerKey[i]);
   }
   return result;
 }
