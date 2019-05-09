@@ -64,7 +64,11 @@ void loop() {
   // put your main code here, to run repeatedly:
   readEnc();
   updateDisplay();
-//  playbackFile();
+  if(isFM()){
+    search2Play(String(fmFreq));
+  }else{
+    search2Play(String(amFreq));
+  }
 }
 
 void updateDisplay(){
@@ -72,17 +76,53 @@ void updateDisplay(){
   lcd.clear();
   if(isFM()){
     if(fmFreq >999){
-      lcd.setCursor(2,0);
-    }else{
       lcd.setCursor(1,0);
+    }else{
+      lcd.setCursor(2,0);
     }
     float freq = fmFreq/10.0;
     String s = String(freq);
     s += "FM";
     lcd.print(s);
   }else{
-    
+    if(amFreq > 999){
+      lcd.setCursor(1,0);
+    }else{
+      lcd.setCursor(2,0);
+    }
+    String s = String(amFreq);
+    s += "AM";
+    lcd.print(s);
   }
+}
+
+int search2Play(String str){
+Serial.print("entering search: ");
+String fileName = str;
+if(isFM){
+  fileName.concat("FM");
+}else{
+  fileName.concat("AM");
+}
+fileName.concat(".MP3");
+char c_fileName[fileName.length()+1];
+fileName.toCharArray(c_fileName, fileName.length()+1);
+Serial.println(c_fileName);
+if(SD.exists(fileName)){
+  Serial.println("Found File");
+  if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+  }
+  if (! musicPlayer.startPlayingFile(c_fileName)) {
+  Serial.println("Error opening file");
+  return 1;
+  }
+}
+else{
+  search2Play("STATIC");
+}
+fileName = "";
+return 0;
 }
 
 void readEnc(){
