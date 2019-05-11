@@ -10,6 +10,8 @@
  *                   1.08 should work fine though
  */
 
+#define VOLUME 40 //lower numbers = louder!
+
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
 #include <Adafruit_VS1053.h>
@@ -64,18 +66,21 @@ void setup(){
   Serial.println(F("VS1053 found"));
 
   musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
- 
+  delay(500);
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
   }
   Serial.println("SD OK!");
+  musicPlayer.setVolume(VOLUME,VOLUME);
+  
+  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
   
   // list files
   printDirectory(SD.open("/"), 0);
   
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(20,20);
+  
 
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
