@@ -19,11 +19,11 @@ void setup() {
 
 void loop() {
 
-Serial.print(digitalRead(SW_1));
-Serial.print(digitalRead(SW_2));
-Serial.print(digitalRead(SW_3));
-Serial.print(digitalRead(SW_4));
-Serial.print(digitalRead(SW_5));
+Serial.print(!digitalRead(SW_1));
+Serial.print(!digitalRead(SW_2));
+Serial.print(!digitalRead(SW_3));
+Serial.print(!digitalRead(SW_4));
+Serial.print(!digitalRead(SW_5));
 Serial.println();
 delay(50);
 }
