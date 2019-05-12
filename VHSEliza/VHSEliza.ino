@@ -340,7 +340,10 @@ void giveResult(int p)
             delay(300);
             lcd.setCursor(0,1);
           }
-          lcd.print(result);
+        lcd.setCursor(3,0); //Centre text
+        lcd.print("They rent:");
+        lcd.setCursor(0,1); //second line
+        lcd.print(result);
         }else{
         lcd.setCursor(3,0); //Centre text
         lcd.print("They rent:");
@@ -368,7 +371,10 @@ void giveResult(int p)
             delay(300);
             lcd.setCursor(0,1);
           }
-          lcd.print(result);
+        lcd.setCursor(3,0); //Centre text
+        lcd.print("They rent:");
+        lcd.setCursor(0,1); //second line
+        lcd.print(result);
         }else{
         lcd.setCursor(3,0); //Centre text
         lcd.print("They rent:");
