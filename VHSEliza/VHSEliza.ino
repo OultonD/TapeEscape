@@ -52,7 +52,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("LCD...");
 
-//Set up buttons
   trueButton.begin();
   falseButton.begin();
   encButton.begin();
@@ -98,17 +97,13 @@ void loop() {
   }
 }
 
-
-//Use the encoder to choose your path
-//TODO: fix "Path 0" bug
-
 void choosePath()
 {
   int newPath;
   int curPath = path;
   while(!encButton.pressed())
   {
-   newPath = enc.read()/2; //encoder counts in multiples of two
+   newPath = enc.read()/2; 
    if(newPath != curPath)
    {
        if(newPath > maxPaths)
@@ -188,72 +183,72 @@ void setQuestions() // ZERO INDEXED, SORRY
 //  pathList[0].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[0].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[0].setQuestion(3, "Question 4:", "True or False?");
-  pathList[0].setCorrectResult("Correct!");
-  pathList[0].setIncorrectResult("Incorrect");
-  bool key0[] = {true, true, true, true};
+  pathList[0].setCorrectResult("Grmmys Gr8st Vol2");
+  pathList[0].setIncorrectResult("Amelie");
+  bool key0[] = {false, false, true, true};
   pathList[0].setAnswerKey(key0);
   
 //  pathList[1].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[1].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[1].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[1].setQuestion(3, "Question 4:", "True or False?");
-  pathList[1].setCorrectResult("Correct!");
-  pathList[1].setIncorrectResult("Incorrect");
-  bool key1[] = {true, true, true, true};
+  pathList[1].setCorrectResult("Super Mario III");
+  pathList[1].setIncorrectResult("Raging Bull");
+  bool key1[] = {true, false, true, false};
   pathList[1].setAnswerKey(key1);
 //
 //  pathList[2].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[2].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[2].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[2].setQuestion(3, "Question 4:", "True or False?");
-  pathList[2].setCorrectResult("Correct!");
-  pathList[2].setIncorrectResult("Incorrect");
-  bool key2[] = {true, true, true, true};
+  pathList[2].setCorrectResult("Sleepless in Seattle");
+  pathList[2].setIncorrectResult("Paddle to the Sea");
+  bool key2[] = {false, false, true, true};
   pathList[2].setAnswerKey(key2);
 
 //  pathList[3].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[3].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[3].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[3].setQuestion(3, "Question 4:", "True or False?");
-  pathList[3].setCorrectResult("Correct!");
-  pathList[3].setIncorrectResult("Incorrect");
-  bool key3[] = {true, true, true, true};
+  pathList[3].setCorrectResult("Thelma and Louise");
+  pathList[3].setIncorrectResult("Monsoon Wedding");
+  bool key3[] = {false, true, true, false};
   pathList[3].setAnswerKey(key3);
 
 //  pathList[4].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[4].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[4].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[4].setQuestion(3, "Question 4:", "True or False?");
-  pathList[4].setCorrectResult("Correct!");
-  pathList[4].setIncorrectResult("Incorrect");
-  bool key4[] = {true, true, true, true};
+  pathList[4].setCorrectResult("Billy Madison");
+  pathList[4].setIncorrectResult("Jsph+the Tchnclr Drm Coat");
+  bool key4[] = {false, true, false, false};
   pathList[4].setAnswerKey(key4);
 
 //  pathList[5].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[5].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[5].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[5].setQuestion(3, "Question 4:", "True or False?");
-  pathList[5].setCorrectResult("Correct!");
-  pathList[5].setIncorrectResult("Incorrect");
-  bool key5[] = {true, true, true, true};
+  pathList[5].setCorrectResult("Jack the Bear");
+  pathList[5].setIncorrectResult("Splitting Heirs");
+  bool key5[] = {false, true, true, false};
   pathList[5].setAnswerKey(key5);
   
 //  pathList[6].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[6].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[6].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[6].setQuestion(3, "Question 4:", "True or False?");
-  pathList[6].setCorrectResult("Correct!");
-  pathList[6].setIncorrectResult("Incorrect");
-  bool key6[] = {true, true, true, true};
+  pathList[6].setCorrectResult("Dr. No");
+  pathList[6].setIncorrectResult("Feathers for Felines");
+  bool key6[] = {true, true, false, false};
   pathList[6].setAnswerKey(key6);
 
 //  pathList[7].setQuestion(0, "Question 1:", "True or False?");
 //  pathList[7].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[7].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[7].setQuestion(3, "Question 4:", "True or False?");
-  pathList[7].setCorrectResult("Correct!");
-  pathList[7].setIncorrectResult("Incorrect");
-  bool key7[] = {true, true, true, true};
+  pathList[7].setCorrectResult("Godzilla 1986");
+  pathList[7].setIncorrectResult("Dead Poets Society");
+  bool key7[] = {true, true, false, false};
   pathList[7].setAnswerKey(key7);
   Serial.println("Done");
 }
@@ -316,10 +311,14 @@ void giveResult(int p)
   Serial.println();
   if(pathList[p].checkResult(responses))
   {
+    lcd.print("They rent:");
+    lcd.setCursor(0,1);
     lcd.print(pathList[p].getCorrectResult());
   }
   else
   {
+    lcd.print("They rent:");
+    lcd.setCursor(0,1);
     lcd.print(pathList[p].getIncorrectResult());
   }
 }
@@ -365,4 +364,3 @@ void ledOFF()
   digitalWrite(falseLED, 0);
   brightness = 0;
 }
-
