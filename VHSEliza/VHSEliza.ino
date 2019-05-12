@@ -52,6 +52,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("LCD...");
 
+//Set up buttons
   trueButton.begin();
   falseButton.begin();
   encButton.begin();
@@ -97,13 +98,17 @@ void loop() {
   }
 }
 
+
+//Use the encoder to choose your path
+//TODO: fix "Path 0" bug
+
 void choosePath()
 {
   int newPath;
   int curPath = path;
   while(!encButton.pressed())
   {
-   newPath = enc.read()/2; 
+   newPath = enc.read()/2; //encoder counts in multiples of two
    if(newPath != curPath)
    {
        if(newPath > maxPaths)

@@ -1,8 +1,4 @@
-/* Included 3rd Party Libraries:
- * Button.h - https://github.com/madleech/Button
- * LiquidCrystal_PCF8574.h - https://github.com/mathertel/LiquidCrystal_PCF8574
- * Encoder.h - https://github.com/PaulStoffregen/Encoder
- */
+
 
  /* Included Libraries:
  * Keypad.h - https://github.com/Chris--A/Keypad
@@ -74,14 +70,11 @@ void setup(){
   Serial.println("SD OK!");
   musicPlayer.setVolume(VOLUME,VOLUME);
   
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
+  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate SD Card is working
   
   // list files
   printDirectory(SD.open("/"), 0);
-  
-  // Set volume for left, right channels. lower numbers == louder volume!
-  
-
+ 
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
 
@@ -106,20 +99,21 @@ void loop(){
     }
 }
 
-// Taking care of some special events.
+// Handle keypresses
+// Todo: Fuction for hanging up/cancelling dialtone?
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
          switch (key){
-          case '#':
+          case '#': //hit # to dial
             search2Play(s);
             s = "";
             break;
-          case '*':
+          case '*': //hit * to bring up dialtone
             s = "";
             search2Play("DIALTONE");
             break;
-          default:
+          default: //otherwise, play the tone for the number dialed
             playTone(String(key));
             s += key;
             break;

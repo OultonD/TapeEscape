@@ -1,3 +1,9 @@
+/* Included 3rd Party Libraries:
+ * Button.h - https://github.com/madleech/Button
+ * LiquidCrystal_PCF8574.h - https://github.com/mathertel/LiquidCrystal_PCF8574
+ * Encoder.h - https://github.com/PaulStoffregen/Encoder
+ */
+
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
 #include <Adafruit_VS1053.h>
