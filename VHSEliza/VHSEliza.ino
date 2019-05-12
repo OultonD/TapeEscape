@@ -150,18 +150,28 @@ void ask(Path p)
     tB = trueButton.pressed();
     fB = falseButton.pressed();
   }while(!tB && !fB);
- 
-  if(tB)
-  {
+
+  ledOFF();
+  
+  if(tB){
     responses[i] = true;
     Serial.println("T");
-  }
-  else
-  {
+    digitalWrite(trueLED, 1);
+
+  }else{
     responses[i] = false;
     Serial.println("F");
+    digitalWrite(falseLED, 1);
   }
 
+  //Lockout buttons for a time
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Recording your ");
+  lcd.setCursor(0,1);
+  lcd.print("response...");
+  delay(2000);    //Lockout time, in ms
+  ledON();
   }
 }
 
