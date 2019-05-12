@@ -1,0 +1,165 @@
+EESchema Schematic File Version 4
+EELAYER 26 0
+EELAYER END
+$Descr A 11000 8500
+encoding utf-8
+Sheet 1 1
+Title "Tape Escape Puzzle Prop"
+Date "2019-05-11"
+Rev "1"
+Comp "Outside the March"
+Comment1 "for"
+Comment2 "Designed by Daniel Oulton"
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_Nano_v3.x A1
+U 1 1 5CD76603
+P 4800 2950
+F 0 "A1" H 4800 1864 50  0000 C CNN
+F 1 "Arduino_Nano_v3.x" H 4800 1773 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 4950 2000 50  0001 L CNN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 4800 1950 50  0001 C CNN
+	1    4800 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW2
+U 1 1 5CD766FC
+P 6050 2950
+F 0 "SW2" H 6050 3172 50  0000 C CNN
+F 1 "Green" H 6050 3081 50  0000 C CNN
+F 2 "" H 6050 2950 50  0001 C CNN
+F 3 "" H 6050 2950 50  0001 C CNN
+	1    6050 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW3
+U 1 1 5CD767F6
+P 6050 3300
+F 0 "SW3" H 6050 3522 50  0000 C CNN
+F 1 "Yellow" H 6050 3431 50  0000 C CNN
+F 2 "" H 6050 3300 50  0001 C CNN
+F 3 "" H 6050 3300 50  0001 C CNN
+	1    6050 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW4
+U 1 1 5CD7682D
+P 6050 3650
+F 0 "SW4" H 6050 3872 50  0000 C CNN
+F 1 "Red" H 6050 3781 50  0000 C CNN
+F 2 "" H 6050 3650 50  0001 C CNN
+F 3 "" H 6050 3650 50  0001 C CNN
+	1    6050 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW5
+U 1 1 5CD76852
+P 6050 4000
+F 0 "SW5" H 6050 4222 50  0000 C CNN
+F 1 "White" H 6050 4131 50  0000 C CNN
+F 2 "" H 6050 4000 50  0001 C CNN
+F 3 "" H 6050 4000 50  0001 C CNN
+	1    6050 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Reed SW1
+U 1 1 5CD7686E
+P 6050 2600
+F 0 "SW1" H 6050 2822 50  0000 C CNN
+F 1 "Blue" H 6050 2731 50  0000 C CNN
+F 2 "" H 6050 2600 50  0001 C CNN
+F 3 "" H 6050 2600 50  0001 C CNN
+	1    6050 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5300 2950 5850 2950
+Wire Wire Line
+	5300 3050 5800 3050
+Wire Wire Line
+	5800 3050 5800 3300
+Wire Wire Line
+	5800 3300 5850 3300
+Wire Wire Line
+	5300 3150 5750 3150
+Wire Wire Line
+	5750 3150 5750 3650
+Wire Wire Line
+	5750 3650 5850 3650
+Wire Wire Line
+	5300 3250 5700 3250
+Wire Wire Line
+	5700 3250 5700 4000
+Wire Wire Line
+	5700 4000 5850 4000
+Wire Wire Line
+	4300 2550 4200 2550
+Wire Wire Line
+	4200 2550 4200 1850
+Wire Wire Line
+	4200 1850 5850 1850
+Wire Wire Line
+	5850 1850 5850 2600
+$Comp
+L power:GND #PWR01
+U 1 1 5CD76BE6
+P 6250 2600
+F 0 "#PWR01" H 6250 2350 50  0001 C CNN
+F 1 "GND" V 6255 2472 50  0000 R CNN
+F 2 "" H 6250 2600 50  0001 C CNN
+F 3 "" H 6250 2600 50  0001 C CNN
+	1    6250 2600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 5CD76C16
+P 6250 2950
+F 0 "#PWR02" H 6250 2700 50  0001 C CNN
+F 1 "GND" V 6255 2822 50  0000 R CNN
+F 2 "" H 6250 2950 50  0001 C CNN
+F 3 "" H 6250 2950 50  0001 C CNN
+	1    6250 2950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR03
+U 1 1 5CD76C32
+P 6250 3300
+F 0 "#PWR03" H 6250 3050 50  0001 C CNN
+F 1 "GND" V 6255 3172 50  0000 R CNN
+F 2 "" H 6250 3300 50  0001 C CNN
+F 3 "" H 6250 3300 50  0001 C CNN
+	1    6250 3300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 5CD76C4E
+P 6250 3650
+F 0 "#PWR04" H 6250 3400 50  0001 C CNN
+F 1 "GND" V 6255 3522 50  0000 R CNN
+F 2 "" H 6250 3650 50  0001 C CNN
+F 3 "" H 6250 3650 50  0001 C CNN
+	1    6250 3650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR05
+U 1 1 5CD76C6A
+P 6250 4000
+F 0 "#PWR05" H 6250 3750 50  0001 C CNN
+F 1 "GND" V 6255 3872 50  0000 R CNN
+F 2 "" H 6250 4000 50  0001 C CNN
+F 3 "" H 6250 4000 50  0001 C CNN
+	1    6250 4000
+	0    -1   -1   0   
+$EndComp
+$EndSCHEMATC
