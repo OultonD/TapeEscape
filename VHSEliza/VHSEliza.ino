@@ -115,6 +115,7 @@ void choosePath()
        {
         enc.write(1*2);
        }
+       newPath = enc.read()/2;
        lcd.clear();
        lcd.setCursor(0,0);
        lcd.print("Select Path");
