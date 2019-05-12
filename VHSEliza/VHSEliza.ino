@@ -221,7 +221,7 @@ void setQuestions() // ZERO INDEXED, SORRY
 //  pathList[4].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[4].setQuestion(3, "Question 4:", "True or False?");
   pathList[4].setCorrectResult("Billy Madison");
-  pathList[4].setIncorrectResult("Jsph+the Tchnclr Drm Coat");
+  pathList[4].setIncorrectResult("Joseph and the Technicolour Dream Coat");
   bool key4[] = {false, true, false, false};
   pathList[4].setAnswerKey(key4);
 
@@ -312,15 +312,59 @@ void giveResult(int p)
   Serial.println();
   if(pathList[p].checkResult(responses))
   {
-    lcd.print("They rent:");
-    lcd.setCursor(0,1);
-    lcd.print(pathList[p].getCorrectResult());
+        String result = pathList[p].getCorrectResult();
+        int rLen = result.length();
+        if(rLen > 16){
+          for(int i = 0; i<3; i++){ //number of times to scroll
+            lcd.setCursor(3,0); //Centre text
+            lcd.print("They rent:");
+            lcd.setCursor(0,1); //second line
+            lcd.print(result);
+            delay(1000);
+            for(int j = 0; j<(rLen-16); j++){ //scroll remaining characters
+              lcd.scrollDisplayLeft();
+              delay(300);
+            }
+            delay(1000);
+            lcd.clear();
+            delay(300);
+            lcd.setCursor(0,1);
+          }
+          lcd.print(result);
+        }else{
+        lcd.setCursor(3,0); //Centre text
+        lcd.print("They rent:");
+        lcd.setCursor(0,1); //second line
+        lcd.print(result);
+        }
   }
-  else
+  else //incorrect case
   {
-    lcd.print("They rent:");
-    lcd.setCursor(0,1);
-    lcd.print(pathList[p].getIncorrectResult());
+        String result = pathList[p].getIncorrectResult();
+        int rLen = result.length();
+        if(rLen > 16){
+          for(int i = 0; i<3; i++){ //number of times to scroll
+            lcd.setCursor(3,0); //Centre text
+            lcd.print("They rent:");
+            lcd.setCursor(0,1); //second line
+            lcd.print(result);
+            delay(1000);
+            for(int j = 0; j<(rLen-16); j++){ //scroll remaining characters
+              lcd.scrollDisplayLeft();
+              delay(300);
+            }
+            delay(1000);
+            lcd.clear();
+            delay(300);
+            lcd.setCursor(0,1);
+          }
+          lcd.print(result);
+        }else{
+        lcd.setCursor(3,0); //Centre text
+        lcd.print("They rent:");
+        lcd.setCursor(0,1); //second line
+        lcd.print(result);
+        }
   }
 }
 
