@@ -134,6 +134,10 @@ void keypadEvent(KeypadEvent key){
 int search2Play(String str){
 Serial.print("entering search: ");
 String fileName = str;
+//if something's playing and we hit *, hang up and reset the stack
+if(musicPlayer.playingMusic && str == "DIALTONE"){
+  musicPlayer.stopPlaying();
+}else{
 fileName.concat(".MP3");
 char c_fileName[fileName.length()+1];
 fileName.toCharArray(c_fileName, fileName.length()+1);
@@ -147,9 +151,9 @@ if(SD.exists(fileName)){
   Serial.println("Error opening file");
   return 1;
   }
-}
-else{
+}else{
   search2Play("BUSY");
+}
 }
 fileName = "";
 return 0;
