@@ -1,4 +1,26 @@
-
+/*
+ * VHS Telephone
+ * Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  A keypad is used to dial a number that the audience member finds
+ *  A corresponding MP3 is played.
+ *  The MP3s are loaded on the SD card in the form "PHONENUMBER.MP3"
+ *  Every time a key is pressed, the number is loaded to the stack. 
+ *  When # is pressed, the number is "Dialed" ie, searched for on the SD card
+ *  If found the mp3 is played, if not, play a busy signal.
+ *  The * key is to pick up or hang up. This also clears the stack.
+ *  
+ *  Schematic:
+ *                   Keypad
+ *                      v
+ *  5v USB power --> Arduino -> 5v stereo amp => Stereo speakers
+ *                      v^            ^
+ *                VS1053 MP3 Decoder--|
+ *                      
+ */
 
  /* Included Libraries:
  * Keypad.h - https://github.com/Chris--A/Keypad

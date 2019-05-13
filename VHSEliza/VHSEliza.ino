@@ -1,6 +1,28 @@
 /*
  *  VHS Eliza Machine
- *  Reminder: All questions must fit within a 16x2 matrix
+ *  Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  An LCD screen displays and records responses for 4 T/F questions
+ *  The user interacts with the device by picking a Path through an encoder
+ *  which loads the propper Truth Table for the device
+ *  The user enters their responses to the questions with two buttons,
+ *  and receives a message based on their score.
+ *  
+ *  Schematic:
+ *                 Encoder
+ *                    v
+ *  5v USB power -> Arduino -> LCD screen
+ *                    ^
+ *                  T/F Buttons
+ *                  
+ *  Debug:
+ *  To debug, open the serial monitor at 115200 baud 
+ *  The expected output is: LCD Found
+ *                  
+ *  Reminder: All text must fit within a 16x2 matrix
  *        ie:
  *    ################
  *    ################
