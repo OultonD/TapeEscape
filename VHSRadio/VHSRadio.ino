@@ -20,6 +20,8 @@
 // DREQ should be an Int pin, see http://arduino.cc/en/Reference/attachInterrupt
 #define DREQ 3       // VS1053 Data request, ideally an Interrupt pin
 
+#define VOLUME 40
+
 Adafruit_VS1053_FilePlayer musicPlayer = 
   // create breakout-example object!
   Adafruit_VS1053_FilePlayer(BREAKOUT_RESET, BREAKOUT_CS, BREAKOUT_DCS, DREQ, CARDCS);
@@ -50,11 +52,36 @@ int amFreq = AMMIN;
 #define FMSTEP 2 //in hundreds of khz
 int fmFreq = FMMIN;
 
-int encLastRead = 0;
-int encCurrRead = 0;
+int encLastRead = 1;
+int encCurrRead = 1;
+
+bool playingStatic = false;
 
 void setup() {
   Serial.begin(115200);
+  if (! musicPlayer.begin()) { // initialise the music player
+     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     while (1);
+  }
+  Serial.println(F("VS1053 found"));
+
+  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
+  delay(500);
+  if (!SD.begin(CARDCS)) {
+    Serial.println(F("SD failed, or not present"));
+    while (1);  // don't do anything more
+  }
+  Serial.println("SD OK!");
+  musicPlayer.setVolume(VOLUME,VOLUME);
+  
+  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate SD Card is working
+  
+  // list files
+  printDirectory(SD.open("/"), 0);
+ 
+  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
+    Serial.println(F("DREQ pin is not an interrupt pin"));
+  setupLCD();
   // put your setup code here, to run once:
   pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
   
@@ -63,18 +90,28 @@ void setup() {
   }else{
     enc.write(amFreq);
   }
-  
+
+  //musicPlayer.stopPlaying();
+  search2Play("BUSY"); //I literally don't know why this is needed but it is.
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  readEnc();
+  if(playingStatic && !musicPlayer.playingMusic){
+    playingStatic = false;
+    search2Play("STATIC");
+  }
+  
+  if(readEnc()){
   updateDisplay();
   if(isFM()){
     search2Play(String(fmFreq));
   }else{
     search2Play(String(amFreq));
   }
+  }
+  //Serial.println("Loop");
+  //delay(50);
 }
 
 void updateDisplay(){
@@ -87,7 +124,7 @@ void updateDisplay(){
       lcd.setCursor(2,0);
     }
     float freq = fmFreq/10.0;
-    String s = String(freq);
+    String s = String(freq,1);
     s += "FM";
     lcd.print(s);
   }else{
@@ -123,17 +160,24 @@ if(SD.exists(fileName)){
   Serial.println("Error opening file");
   return 1;
   }
-}
-else{
+  playingStatic = false;
+}else{
+  if(!playingStatic){
   search2Play("STATIC");
+  playingStatic = true;
+  }else{
+  Serial.println("Already playing static, skipping");
+  }
 }
 fileName = "";
 return 0;
 }
 
-void readEnc(){
+bool readEnc(){
   encCurrRead = enc.read();
-  
+  if(encCurrRead == encLastRead){
+    return 0;
+  }
   if(isFM()){ //FM dial
     if(encCurrRead > encLastRead){
       fmFreq += FMSTEP;
@@ -162,6 +206,56 @@ void readEnc(){
     Serial.println(amFreq);
   }
   encLastRead = encCurrRead;
+  return 1;
+}
+
+void setupLCD()
+{
+    // See http://playground.arduino.cc/Main/I2cScanner
+  Wire.begin();
+  Wire.beginTransmission(0x27);
+  int error = Wire.endTransmission();
+  Serial.print(error);
+
+  if (error == 0) {
+    Serial.println(" - LCD found.");
+
+  } else {
+    Serial.println(" - LCD not found.");
+  } 
+
+  lcd.begin(16, 2); // initialize the lcd
+  lcd.setBacklight(255);
+  lcd.home(); lcd.clear(); lcd.noCursor();
+  lcd.print("Hello.");
+  delay(250);
+  lcd.clear();
+}
+
+/// File listing helper
+void printDirectory(File dir, int numTabs) {
+   while(true) {
+     
+     File entry =  dir.openNextFile();
+     if (! entry) {
+       // no more files
+       //Serial.println("**nomorefiles**");
+       break;
+     }
+     for (uint8_t i=0; i<numTabs; i++) {
+       Serial.print('\t');
+     }
+     Serial.print(entry.name());
+     if (entry.isDirectory()) {
+       Serial.println("/");
+       printDirectory(entry, numTabs+1);
+     } else {
+       // files have sizes, directories do not
+       Serial.print("\t\t");
+       Serial.println(entry.size(), DEC);
+     }
+     entry.close();
+   }
 }
 
 bool isFM()
