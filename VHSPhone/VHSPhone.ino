@@ -7,7 +7,7 @@
  *  Usage:
  *  A keypad is used to dial a number that the audience member finds
  *  A corresponding MP3 is played.
- *  The MP3s are loaded on the SD card in the form "PHONENUMBER.MP3"
+ *  The MP3s are loaded from the SD card in the form "PHONENUMBER.MP3"
  *  Every time a key is pressed, the number is loaded to the stack. 
  *  When # is pressed, the number is "Dialed" ie, searched for on the SD card
  *  If found the mp3 is played, if not, play a busy signal.
@@ -20,6 +20,15 @@
  *                      v^            ^
  *                VS1053 MP3 Decoder--|
  *                      
+ *  Debug:
+ *  When booting, the device plays 2 tones to indicate the speakers
+ *  and SD card are working.
+ *  To debug, open the serial monitor at 115200 baud.
+ *  The expected output is: VS1053 found, SD OK!
+ *  Followed by: a printout of the files on the SD card 
+ *  Every time a key is pressed, the stack is printed.
+ *  As well, every time a number is dialed, the search results
+ *  are displayed.
  */
 
  /* Included Libraries:
