@@ -35,12 +35,15 @@ LiquidCrystal_PCF8574 lcd(0x27);  // set the LCD address to 0x27 for a 16 chars 
 Encoder enc(2, A2);
 
 #include <Servo.h>
+Servo s;
 
 #define SERVO_PIN 5
 #define SERVO_START 0
 #define SERVO_END 90 //in degrees
 
 #define AM_FM 7 //AM/FM Switch
+
+#define ENCBUTTON A1
 
 #define AMMAX 1700
 #define AMMIN 540
@@ -55,7 +58,16 @@ int fmFreq = FMMIN;
 int encLastRead = 1;
 int encCurrRead = 1;
 
+unsigned long currMillis = 0;
+unsigned long prevMillis = 0;
+int freqDelay = 250; //how long, in ms, do we need to land on a freq before playing?
+int lastFreq = 0; //what was the frequency, last time we checked?
+bool freqFlag = false;
+
+
 bool playingStatic = false;
+bool lastSwitchReading = true;
+bool isFM;
 
 void setup() {
   Serial.begin(115200);
@@ -65,8 +77,8 @@ void setup() {
   }
   Serial.println(F("VS1053 found"));
 
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
-  delay(500);
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
@@ -74,18 +86,23 @@ void setup() {
   Serial.println("SD OK!");
   musicPlayer.setVolume(VOLUME,VOLUME);
   
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate SD Card is working
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
   
   // list files
-  printDirectory(SD.open("/"), 0);
+  //printDirectory(SD.open("/"), 0);
  
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
   setupLCD();
   // put your setup code here, to run once:
   pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
-  
-  if(isFM()){
+
+  isFM = digitalRead(AM_FM);
+  lastSwitchReading = isFM;
+
+  s.attach(SERVO_PIN);
+  rotateCar();
+  if(isFM){
     enc.write(fmFreq);
   }else{
     enc.write(amFreq);
@@ -97,27 +114,42 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  isFM = digitalRead(AM_FM);
   if(playingStatic && !musicPlayer.playingMusic){
+    Serial.println("Looping static");
     playingStatic = false;
     search2Play("STATIC");
+    playingStatic = true;
+    delay(100);
+  }
+  readEnc();
+  int freq = getFreq();
+
+  if(isFM != lastSwitchReading){
+    musicPlayer.stopPlaying();
+    playingStatic = false;
+    rotateCar();
   }
   
-  if(readEnc()){
+  if((freq != lastFreq) || (isFM != lastSwitchReading)){
   updateDisplay();
-  if(isFM()){
-    search2Play(String(fmFreq));
-  }else{
-    search2Play(String(amFreq));
+  currMillis = millis(); //what time did we land on this freq?
+  freqFlag = true; //let your freq flag fly
   }
+  if(freq == lastFreq && (millis() - currMillis) >= freqDelay && freqFlag){
+     search2Play(String(freq));
+     freqFlag = false; //to prevent an infinite loop;
   }
+  lastSwitchReading = isFM;
+  lastFreq = freq;
   //Serial.println("Loop");
-  //delay(50);
+  delay(50);
 }
 
 void updateDisplay(){
   lcd.home();
   lcd.clear();
-  if(isFM()){
+  if(isFM){
     if(fmFreq >999){
       lcd.setCursor(1,0);
     }else{
@@ -164,6 +196,7 @@ if(SD.exists(fileName)){
 }else{
   if(!playingStatic){
   search2Play("STATIC");
+  Serial.println("File not found. Playing static");
   playingStatic = true;
   }else{
   Serial.println("Already playing static, skipping");
@@ -178,7 +211,7 @@ bool readEnc(){
   if(encCurrRead == encLastRead){
     return 0;
   }
-  if(isFM()){ //FM dial
+  if(isFM){ //FM dial
     if(encCurrRead > encLastRead){
       fmFreq += FMSTEP;
     }else if(encCurrRead < encLastRead){
@@ -258,8 +291,41 @@ void printDirectory(File dir, int numTabs) {
    }
 }
 
-bool isFM()
-{
-  return digitalRead(AM_FM);
+int getFreq(){
+  if(isFM){
+    return fmFreq;
+  }else{
+    return amFreq;
+  }
 }
+
+void rotateCar(){
+  if(isFM){
+    s.write(SERVO_START);
+  }else{
+    s.write(SERVO_END);
+  }
+}
+
+//bool isFM()
+//{
+//  bool reading = digitalRead(AM_FM);
+//  Serial.println(reading);
+//  return digitalRead(reading);
+//}
+//
+//bool switchChanged()
+//{
+//  bool reading = isFM();
+//  if(lastSwitchReading == reading){
+//    //Serial.println("Switch unchanged");
+//    return 0;
+//  }else{
+//    lastSwitchReading = reading;
+//    Serial.print("Switch changed to ");
+//    Serial.println(reading);
+//    return 1;
+//  }
+//}
+
 
