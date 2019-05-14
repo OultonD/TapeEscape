@@ -33,8 +33,8 @@ char keys[ROWS][COLS] = {
     {'P','R','F','E'} //PLAY, RWD, FFW, EJECT
 };
 
-byte rowPins[ROWS] = {2, 7}; //connect to the row pinouts of the keypad
-byte colPins[COLS] = {A0, A1, A2, A3}; //connect to the column pinouts of the keypad
+byte rowPins[ROWS] = {A0, 2}; //connect to the row pinouts of the keypad
+byte colPins[COLS] = {7, A3, A2, A1}; //connect to the column pinouts of the keypad
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
@@ -54,7 +54,7 @@ Servo s;
 int pos = 0;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   // put your setup code here, to run once:
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
@@ -92,8 +92,7 @@ void setup() {
 
 void loop() {
     char key = keypad.getKey();
-
-    
+    //Serial.println(key);
 }
 
 void keypadEvent(KeypadEvent key){
@@ -155,6 +154,11 @@ void shiftAnswers()
 
 void checkResult()
 {
+  for(int i = 0; i<4; i++){
+    Serial.print(answers[i]);
+  }
+  Serial.println();
+  result = true;
   for(int i = 0; i<4; i++)
   {
     result = result && (answers[i] == key[i]);
@@ -163,6 +167,10 @@ void checkResult()
   if(result)
   {
     //play success file
+    Serial.println("Success");
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }  
     if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
     Serial.println("Error opening file");
     }
@@ -171,15 +179,22 @@ void checkResult()
   {
     if(answers[0] != 0)
     {
-          if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
-            Serial.println("Error opening file");
-          }
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }          
+        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
+          Serial.println("Error opening file");
+        }
     }
   }
 }
   
 void PLAY()
 {
+  Serial.println("Play");
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }    
   if (! musicPlayer.startPlayingFile("PLAY.MP3")) {
     Serial.println("Error opening file");
   }
@@ -187,6 +202,10 @@ void PLAY()
 
 void REWIND()
 {
+  Serial.println("Rewind");
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }  
   if (! musicPlayer.startPlayingFile("REWIND.MP3")) {
     Serial.println("Error opening file");
   }
@@ -194,6 +213,10 @@ void REWIND()
 
 void FASTFORWARD()
 {
+  Serial.println("Fast Forward");
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }  
   if (! musicPlayer.startPlayingFile("FASTFORWARD.MP3")) {
     Serial.println("Error opening file");
   }
@@ -207,6 +230,7 @@ void FASTFORWARD()
 
 void EJECT()
 {
+  Serial.println("Eject");
   s.write(SERVO_END);
 }
 
