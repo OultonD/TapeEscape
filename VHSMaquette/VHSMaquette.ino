@@ -68,6 +68,8 @@ int key[] = {1,2,3,4}; //answer key
 Servo s;
 int pos = 0;
 
+bool readyToReset = false; //if the eject button has been pushed, this flag is set
+
 void setup() {
   Serial.begin(9600);
   // put your setup code here, to run once:
@@ -100,7 +102,7 @@ void setup() {
   Serial.println("Servo Set");
 
   pinMode(LED, OUTPUT);
-  digitalWrite(LED, HIGH);
+  digitalWrite(LED, LOW);
 
   keypad.addEventListener(keypadEvent);
 }
@@ -117,21 +119,25 @@ void keypadEvent(KeypadEvent key){
           case '1':
             shiftAnswers();
             answers[3] = 1;
+            easyPlay("ONE.MP3");
             checkResult();
             break;
           case '2':
             shiftAnswers();
             answers[3] = 2;
+            easyPlay("TWO.MP3");
             checkResult();
             break;            
           case '3':
             shiftAnswers();
             answers[3] = 3;
+            easyPlay("THREE.MP3");
             checkResult();
             break;
           case '4':
             shiftAnswers();
             answers[3] = 4;
+            easyPlay("FOUR.MP3");
             checkResult();
             break;
           case 'P':
@@ -154,6 +160,13 @@ void keypadEvent(KeypadEvent key){
         break;
 
     case HOLD:
+        switch(key){
+          case '1':
+            if(readyToReset){
+            resetMaquette();
+            }
+            break;
+        }
         break;
 
   }
@@ -181,14 +194,9 @@ void checkResult()
   Serial.println(result);
   if(result)
   {
-    //play success file
-    Serial.println("Success");
-         if(musicPlayer.playingMusic){
-          musicPlayer.stopPlaying();
-         }  
-    if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
-    Serial.println("Error opening file");
-    }
+      //play success file
+      Serial.println("Success");
+      easyPlay("SUCCESS.MP3");
   }
   else
   {
@@ -203,50 +211,54 @@ void checkResult()
     }
   }
 }
+
+void easyPlay(String fileName){
+char c_fileName[fileName.length()+1];
+fileName.toCharArray(c_fileName, fileName.length()+1);
+  if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+   }    
+  if (! musicPlayer.startPlayingFile(c_fileName)) {
+    Serial.println(F("Error opening file"));
+  }
+}
   
 void PLAY()
 {
   Serial.println("Play");
-         if(musicPlayer.playingMusic){
-          musicPlayer.stopPlaying();
-         }    
-  if (! musicPlayer.startPlayingFile("PLAY.MP3")) {
-    Serial.println("Error opening file");
-  }
+  easyPlay("PLAY.MP3");
 }
 
 void REWIND()
 {
-  Serial.println("Rewind");
-         if(musicPlayer.playingMusic){
-          musicPlayer.stopPlaying();
-         }  
-  if (! musicPlayer.startPlayingFile("REWIND.MP3")) {
-    Serial.println("Error opening file");
-  }
+  Serial.println(F("Rewind"));
+  easyPlay(F("REWIND.MP3"));
 }
 
 void FASTFORWARD()
 {
-  Serial.println("Fast Forward");
-         if(musicPlayer.playingMusic){
-          musicPlayer.stopPlaying();
-         }  
-  if (! musicPlayer.startPlayingFile("FASTFORWARD.MP3")) {
-    Serial.println("Error opening file");
-  }
-  for(int i = 0; i<5; i++){
-    digitalWrite(LED, LOW);
-    delay(100);
+  Serial.println(F("Fast Forward"));
+  easyPlay(F("FFWD.MP3"));
+  for(int i = 0; i<3; i++){
     digitalWrite(LED, HIGH);
-    delay(100);
+    delay(500);
+    digitalWrite(LED, LOW);
+    delay(500);
   }
 }
 
 void EJECT()
 {
-  Serial.println("Eject");
+  Serial.println(F("Eject"));
+  easyPlay(F("EJECT.MP3"));
   s.write(SERVO_END);
+  readyToReset = true;
+}
+
+void resetMaquette(){
+  Serial.println("Resetting");
+  s.write(SERVO_START);
+  readyToReset = false;
 }
 
 /// File listing helper
