@@ -91,7 +91,7 @@ int encCurrRead = 1;
 
 unsigned long currMillis = 0;
 unsigned long prevMillis = 0;
-int freqDelay = 250; //how long, in ms, do we need to land on a freq before playing?
+int freqDelay = 500; //how long, in ms, do we need to land on a freq before playing?
 int lastFreq = 0; //what was the frequency, last time we checked?
 bool freqFlag = false;
 
@@ -143,8 +143,10 @@ void setup() {
   }
 
   //musicPlayer.stopPlaying();
-  search2Play("BUSY"); //I literally don't know why this is needed but it is.
+  search2Play("BLANK"); //I literally don't know why this is needed but it is.
+                      //I think the MP3 board needs to play something before the loop starts or it crashes.
   delay(1000);
+  powerDown();
 }
 
 void loop() {
@@ -157,13 +159,13 @@ void loop() {
   }
   
   isFM = digitalRead(AM_FM);
-  if(playingStatic && !musicPlayer.playingMusic){
-    Serial.println(F("Looping static"));
-    playingStatic = false;
-    search2Play("STATIC");
-    playingStatic = true;
-    delay(100);
-  }
+//  if(playingStatic && !musicPlayer.playingMusic){
+//    Serial.println(F("Looping static"));
+//    playingStatic = false;
+//    search2Play("STATIC");
+//    playingStatic = true;
+//    delay(100);
+//  }
   readEnc();
   int freq = getFreq();
 
@@ -176,8 +178,13 @@ void loop() {
   if((freq != lastFreq) || (isFM != lastSwitchReading)){
   updateDisplay();
   currMillis = millis(); //what time did we land on this freq?
+ if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+  }
+  playingStatic = false;
   freqFlag = true; //let your freq flag fly
   }
+  
   if(freq == lastFreq && (millis() - currMillis) >= freqDelay && freqFlag){
      search2Play(String(freq));
      freqFlag = false; //to prevent an infinite loop;
@@ -185,7 +192,7 @@ void loop() {
   lastSwitchReading = isFM;
   lastFreq = freq;
   //Serial.println("Loop");
-  delay(50);
+  //delay(50);
 }
 
 void updateDisplay(){
@@ -214,18 +221,17 @@ void updateDisplay(){
 }
 
 int search2Play(String str){
-Serial.print("entering search: ");
+Serial.print(F("entering search: "));
 String fileName = str;
 if(isFM){
-  fileName.concat("FM");
+  fileName.concat(F("FM.MP3"));
 }else{
-  fileName.concat("AM");
+  fileName.concat(F("AM.MP3"));
 }
-fileName.concat(".MP3");
 char c_fileName[fileName.length()+1];
 fileName.toCharArray(c_fileName, fileName.length()+1);
 Serial.println(c_fileName);
-if(SD.exists(fileName)){
+if(SD.exists(c_fileName)){
   Serial.println("Found File");
   if(musicPlayer.playingMusic){
     musicPlayer.stopPlaying();
@@ -236,9 +242,15 @@ if(SD.exists(fileName)){
   }
   playingStatic = false;
 }else{
-  if(!playingStatic){
-  search2Play("STATIC");
   Serial.println(F("File not found. Playing static"));
+  if(!playingStatic){
+  String radioStatic = "FUZZ";
+  if(isFM){
+    radioStatic.concat(fmFreq%10);
+  }else{
+    radioStatic.concat(amFreq/10%10);
+  }
+  search2Play(radioStatic);
   playingStatic = true;
   }else{
   Serial.println(F("Already playing static, skipping"));
@@ -249,7 +261,7 @@ return 0;
 }
 
 bool readEnc(){
-  encCurrRead = enc.read();
+  encCurrRead = enc.read()/2;
   if(encCurrRead == encLastRead){
     return 0;
   }
@@ -281,6 +293,7 @@ bool readEnc(){
     Serial.println(amFreq);
   }
   encLastRead = encCurrRead;
+  delay(100);
   return 1;
 }
 
@@ -356,9 +369,9 @@ void powerDown(){
   }
   playingStatic = false;
   lcd.clear();
-  lcd.setCursor(4,0);
+  lcd.setCursor(3,0);
   lcd.print("Goodbye.");
-  delay(1000);
+  delay(2500);
   lcd.clear();
   lcd.setBacklight(0);
   amFreq = AMMIN;
