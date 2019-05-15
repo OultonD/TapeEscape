@@ -1,3 +1,18 @@
+ /*
+ *  VHS Maquette
+ *  Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  
+ *  Schematic:
+ *  
+ *  Debug:
+ *  To debug, open the serial monitor at 9600 baud
+ *  
+ */
+ 
  /* Included 3rd party Libraries:
  * Keypad.h - https://github.com/Chris--A/Keypad
  * Adafruit_VS1053.h **Compiled with version 1.07** - https://github.com/adafruit/Adafruit_VS1053_Library
@@ -54,7 +69,7 @@ Servo s;
 int pos = 0;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   // put your setup code here, to run once:
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
@@ -179,12 +194,12 @@ void checkResult()
   {
     if(answers[0] != 0)
     {
-         if(musicPlayer.playingMusic){
-          musicPlayer.stopPlaying();
-         }          
-        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
-          Serial.println("Error opening file");
-        }
+//         if(musicPlayer.playingMusic){
+//          musicPlayer.stopPlaying();
+//         }          
+//        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
+//          Serial.println("Error opening file");
+//        }
     }
   }
 }
