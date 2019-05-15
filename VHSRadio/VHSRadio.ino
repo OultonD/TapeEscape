@@ -63,6 +63,7 @@ Encoder enc(2, A2);
 
 #include <Button.h>
 Button encButton(A1);
+bool pwr = false;
 
 #include <Servo.h>
 Servo s;
@@ -100,7 +101,7 @@ bool lastSwitchReading = true;
 bool isFM;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
      while (1);
@@ -119,12 +120,15 @@ void setup() {
   musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
   
   // list files
-  //printDirectory(SD.open("/"), 0);
+  printDirectory(SD.open("/"), 0);
  
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
   setupLCD();
   // put your setup code here, to run once:
+  
+  encButton.begin();
+  
   pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
 
   isFM = digitalRead(AM_FM);
@@ -140,13 +144,21 @@ void setup() {
 
   //musicPlayer.stopPlaying();
   search2Play("BUSY"); //I literally don't know why this is needed but it is.
+  delay(1000);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if(pwr && encButton.pressed()){
+    pwr = false;
+  }
+  if(!pwr){
+    powerDown();
+  }
+  
   isFM = digitalRead(AM_FM);
   if(playingStatic && !musicPlayer.playingMusic){
-    Serial.println("Looping static");
+    Serial.println(F("Looping static"));
     playingStatic = false;
     search2Play("STATIC");
     playingStatic = true;
@@ -219,17 +231,17 @@ if(SD.exists(fileName)){
     musicPlayer.stopPlaying();
   }
   if (! musicPlayer.startPlayingFile(c_fileName)) {
-  Serial.println("Error opening file");
+  Serial.println(F("Error opening file"));
   return 1;
   }
   playingStatic = false;
 }else{
   if(!playingStatic){
   search2Play("STATIC");
-  Serial.println("File not found. Playing static");
+  Serial.println(F("File not found. Playing static"));
   playingStatic = true;
   }else{
-  Serial.println("Already playing static, skipping");
+  Serial.println(F("Already playing static, skipping"));
   }
 }
 fileName = "";
@@ -281,10 +293,10 @@ void setupLCD()
   Serial.print(error);
 
   if (error == 0) {
-    Serial.println(" - LCD found.");
+    Serial.println(F(" - LCD found."));
 
   } else {
-    Serial.println(" - LCD not found.");
+    Serial.println(F(" - LCD not found."));
   } 
 
   lcd.begin(16, 2); // initialize the lcd
@@ -335,6 +347,30 @@ void rotateCar(){
   }else{
     s.write(SERVO_END);
   }
+}
+
+void powerDown(){
+  Serial.println(F("Powering down"));
+  if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+  }
+  playingStatic = false;
+  lcd.clear();
+  lcd.setCursor(4,0);
+  lcd.print("Goodbye.");
+  delay(1000);
+  lcd.clear();
+  lcd.setBacklight(0);
+  amFreq = AMMIN;
+  fmFreq = FMMIN;
+  bool pwrBtn = false;
+  do{
+    pwrBtn = encButton.pressed(); //wait for the power button to be pressed
+  }while(!pwrBtn);
+  Serial.println(F("Powering up"));
+  lcd.setBacklight(255);
+  delay(700);
+  pwr = true;
 }
 
 //bool isFM()
