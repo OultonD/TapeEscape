@@ -1,3 +1,30 @@
+/*
+ *  VHS Radio
+ *  Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  An LCD displays the frequency the "radio" is tuned to.
+ *  An encoder is used to seek a station that the audience member
+ *  has been told to listen to. 
+ *  When the right station is selected, an MP3 is played.
+ *  MP3s should be in the format [3-4 digits]AM.mp3 OR
+ *  [3-4 digits]FM.mp3. Note that for FM stations, omit the
+ *  decimal in the frequency.
+ *  The "AM/FM" Switch also triggers a servo which rotates a car.
+ *  
+ *  Schematic:
+ *                    Encoder + Switch
+ *                          ^
+ *  5v 2A Wall Wart -> Arduino Nano -> LCD
+ *                          ^v
+ *                    VS1053 MP3 Decoder -> 5v Stereo Amp => Stereo Speaker
+ *  
+ *  Debug:
+ *  To debug, open the serial monitor at 115200 baud
+ *  
+ */
 /* Included 3rd Party Libraries:
  * Button.h - https://github.com/madleech/Button
  * LiquidCrystal_PCF8574.h - https://github.com/mathertel/LiquidCrystal_PCF8574
@@ -34,12 +61,15 @@ LiquidCrystal_PCF8574 lcd(0x27);  // set the LCD address to 0x27 for a 16 chars 
 #include <Encoder.h>
 Encoder enc(2, A2);
 
+#include <Button.h>
+Button encButton(A1);
+
 #include <Servo.h>
 Servo s;
 
 #define SERVO_PIN 5
 #define SERVO_START 0
-#define SERVO_END 90 //in degrees
+#define SERVO_END 170 //in degrees
 
 #define AM_FM 7 //AM/FM Switch
 
