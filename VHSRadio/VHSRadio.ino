@@ -47,7 +47,7 @@
 // DREQ should be an Int pin, see http://arduino.cc/en/Reference/attachInterrupt
 #define DREQ 3       // VS1053 Data request, ideally an Interrupt pin
 
-#define VOLUME 40
+#define VOLUME 10
 
 Adafruit_VS1053_FilePlayer musicPlayer = 
   // create breakout-example object!
