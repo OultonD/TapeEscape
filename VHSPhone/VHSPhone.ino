@@ -40,7 +40,7 @@
  *                   1.08 should work fine though
  */
 
-#define VOLUME 40 //lower numbers = louder!
+#define VOLUME 20 //lower numbers = louder!
 
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
@@ -89,28 +89,10 @@ boolean dialing;
 void setup(){
   Serial.begin(115200);
 
-  if (! musicPlayer.begin()) { // initialise the music player
-     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
-     while (1);
-  }
-  Serial.println(F("VS1053 found"));
+  setupMusicPlayer();
 
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
-  delay(500);
-  if (!SD.begin(CARDCS)) {
-    Serial.println(F("SD failed, or not present"));
-    while (1);  // don't do anything more
-  }
-  Serial.println("SD OK!");
-  musicPlayer.setVolume(VOLUME,VOLUME);
-  
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate SD Card is working
-  
   // list files
   printDirectory(SD.open("/"), 0);
- 
-  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
-    Serial.println(F("DREQ pin is not an interrupt pin"));
 
     pinMode(ledPin, OUTPUT);              // Sets the digital pin as output.
     digitalWrite(ledPin, HIGH);           // Turn the LED on.
@@ -211,6 +193,28 @@ if(SD.exists(fileName)){
   }
 }
 fileName = "";
+}
+
+void setupMusicPlayer(){
+  if (! musicPlayer.begin()) { // initialise the music player
+     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     while (1);
+  }
+  Serial.println(F("VS1053 found"));
+  musicPlayer.setVolume(VOLUME,VOLUME);
+  
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
+  if (!SD.begin(CARDCS)) {
+    Serial.println(F("SD failed, or not present"));
+    while (1);  // don't do anything more
+  }
+  Serial.println("SD OK!");
+  
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
+ 
+  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
+    Serial.println(F("DREQ pin is not an interrupt pin"));
 }
 
 /// File listing helper
