@@ -8,6 +8,9 @@
  *  A keypad is used to dial a number that the audience member finds
  *  A corresponding MP3 is played.
  *  The MP3s are loaded from the SD card in the form "PHONENUMBER.MP3"
+ *  
+ *      NOTE: Phone numbers must be 8 digits or shorter.
+ *  
  *  Every time a key is pressed, the number is loaded to the stack. 
  *  When # is pressed, the number is "Dialed" ie, searched for on the SD card
  *  If found the mp3 is played, if not, play a busy signal.

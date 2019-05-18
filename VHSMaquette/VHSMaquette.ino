@@ -68,6 +68,14 @@ int key[] = {1,2,3,4}; //answer key
 Servo s;
 int pos = 0;
 
+//#define ONE_CHANCE //this is the trigger that determines if the play/rwd etc buttons can be pushed more than once. 
+                   //Comment it out to allow multiple presses
+
+bool played = false;
+bool rewound = false;
+bool fastforwarded = false;
+bool ejected = false;
+
 bool readyToReset = false; //if the eject button has been pushed, this flag is set
 
 void setup() {
@@ -112,6 +120,90 @@ void loop() {
     //Serial.println(key);
 }
 
+
+#ifdef ONE_CHANCE
+void keypadEvent(KeypadEvent key){
+    switch (keypad.getState()){
+    case PRESSED:
+         switch (key){
+          case '1':
+            shiftAnswers();
+            answers[3] = 1;
+            easyPlay("ONE.MP3");
+            checkResult();
+            break;
+          case '2':
+            shiftAnswers();
+            answers[3] = 2;
+            easyPlay("TWO.MP3");
+            checkResult();
+            break;            
+          case '3':
+            shiftAnswers();
+            answers[3] = 3;
+            easyPlay("THREE.MP3");
+            checkResult();
+            break;
+          case '4':
+            shiftAnswers();
+            answers[3] = 4;
+            easyPlay("FOUR.MP3");
+            checkResult();
+            break;
+          case 'P':
+            if(!played){
+              played = true;
+            PLAY();
+            }else{
+              Serial.println("Already played");
+            }
+            break;
+          case 'R':
+            if(!rewound){
+            rewound = true;
+            REWIND();              
+            }else{
+              Serial.println("Already rewound");
+            }
+            break;
+          case 'F':
+            if(!fastforwarded){
+              FASTFORWARD();
+              fastforwarded = true; //still not sure if this is a word
+            }else{
+              Serial.println("Already ffwd");
+            }
+            break;
+          case 'E':
+            if(!ejected){
+             EJECT();   
+             ejected = true;
+            }else{
+              Serial.println("Already ejected");
+            }
+            break;
+          default:
+            break;
+         }  
+
+    case RELEASED:
+        break;
+
+    case HOLD:
+        switch(key){
+          case '1':
+            if(readyToReset){
+            resetMaquette();
+            }
+            break;
+        }
+        break;
+
+  }
+}
+#endif
+
+#ifndef ONE_CHANCE
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
@@ -171,6 +263,8 @@ void keypadEvent(KeypadEvent key){
 
   }
 }
+#endif
+
 
 void shiftAnswers() 
 {
