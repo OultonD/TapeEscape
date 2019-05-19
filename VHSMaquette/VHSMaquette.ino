@@ -6,6 +6,7 @@
  *  
  *  Usage:
  *  
+ *  
  *  Schematic:
  *  
  *  Debug:
@@ -294,15 +295,22 @@ void checkResult()
   }
   else
   {
+    //Play a sound if the wrong tree-quence was pressed
+    //comment this out if you want a rolling stack of presses
     if(answers[0] != 0)
     {
-//         if(musicPlayer.playingMusic){
-//          musicPlayer.stopPlaying();
-//         }          
-//        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
-//          Serial.println("Error opening file");
-//        }
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }          
+        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
+          Serial.println("Error opening file");
+        }
+        answers[0] = 0;
+        answers[1] = 0;
+        answers[2] = 0;
+        answers[3] = 0;
     }
+    
   }
 }
 
