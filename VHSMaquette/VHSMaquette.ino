@@ -5,10 +5,18 @@
  *  "The Tape Escape"
  *  
  *  Usage:
- *  
+ *  Audience members press 4 buttons in order to hear a clue mp3 (SUCCESS.MP3)
+ *  They then search for 4 buttons (Play, RWD, FFW, Eject). Each button plays a sound.
+ *  Comment out "#define ONE_CHANCE" to allow multiple pushes to play the sound over again
+ *  Fast forward also flashes the "Shop LED". Eject opens up a hatch via servo.
  *  
  *  Schematic:
- *  
+ *              4x tree buttons  
+ *                  v
+ *  5v 2A PSU -> Arduino Nano -> VS1053 MP3 Player -> Audio isolator -> 5v amplifier -> Speakers
+ *                  ^       |--> LED
+ *                  |       |--> Servo
+ *               4x VCR buttons
  *  Debug:
  *  To debug, open the serial monitor at 9600 baud
  *  
