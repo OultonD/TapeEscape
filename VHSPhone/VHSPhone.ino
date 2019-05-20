@@ -32,6 +32,16 @@
  *  Every time a key is pressed, the stack is printed.
  *  As well, every time a number is dialed, the search results
  *  are displayed.
+ *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  
+ *  BUSY.MP3
+ *  DIALTONE.MP3
+ *  dtmf-[0-9].MP3 - The tones for each key
+ *  dtmf-[star/hash] - These tones are never played but are included for completeness
+ *  [########].MP3 - Any dialled phone numbers. The maximum length of a number is 8 characters.
+ *  
  */
 
  /* Included Libraries:

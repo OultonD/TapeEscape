@@ -20,9 +20,22 @@
  *  5v 2A Wall Wart -> Arduino Nano -> LCD
  *                          ^v
  *                    VS1053 MP3 Decoder -> 5v Stereo Amp => Stereo Speaker
- *  
  *  Debug:
  *  To debug, open the serial monitor at 115200 baud
+ *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  
+ *  SILENCE.MP3 - 30 seconds of silence, to prevent an infitine loop
+ *  FUZZ[0-9]AM.MP3 - 10 MP3s of static to be played when a file isn't found on AM
+ *  FUZZ[1,3,5,7,9]FM.mp3 - 5 MP3s of static to be played when a file isn't found on FM
+ *  [#]###[AM/FM].MP3 - The "radio stations" are formatted this way. 
+ *                      FM stations count by .2 from 88.1 to 107.9. FM stations are always ODD
+ *                      FM stations are listed WITHOUT the decimal.
+ *                      Example: 89.1fm becomes 891FM.MP3, 107.1FM becomes 1071FM.MP3
+ *                      
+ *                      AM stations count by 10s, from 540 to 1700.
+ *                      Example 680AM.MP3, 1690AM.MP3
  *  
  */
 /* Included 3rd Party Libraries:

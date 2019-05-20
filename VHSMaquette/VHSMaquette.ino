@@ -20,6 +20,20 @@
  *  Debug:
  *  To debug, open the serial monitor at 9600 baud
  *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  ONE.MP3 - Played when tree button 1 is pressed
+ *  TWO.MP3 -   "     "     "   "     2  "  "
+ *  THREE.MP3 - Tree button 3
+ *  FOUR.MP3 -  Tree button 4
+ *  SUCCESS.MP3 - Played when the right Tree-quence is pressed
+ *  FAILURE.MP3 - Played when the WRONG Tree-quence is pressed
+ *  
+ *  PLAY.MP3    - When the PLAY button is pressed
+ *  REWIND.MP3  - When REWIND is pressed
+ *  FFWD.MP3    - When FAST FORWARD is pressed
+ *  EJECT.MP3   - When EJECT is pressed
+ * 
  */
  
  /* Included 3rd party Libraries:
