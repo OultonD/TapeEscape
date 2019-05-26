@@ -103,6 +103,14 @@ bool readyToReset = false; //if the eject button has been pushed, this flag is s
 
 void setup() {
   Serial.begin(9600);
+
+//Print debug info about what time the code was uploaded
+  Serial.print(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
+  
   // put your setup code here, to run once:
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
@@ -110,14 +118,14 @@ void setup() {
   }
   Serial.println(F("VS1053 found"));
 
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
- 
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
   }
   Serial.println("SD OK!");
-  
+  musicPlayer.sineTest(0x44, 50);
   // list files
   printDirectory(SD.open("/"), 0);
   

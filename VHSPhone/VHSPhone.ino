@@ -39,7 +39,7 @@
  *  BUSY.MP3
  *  DIALTONE.MP3
  *  dtmf-[0-9].MP3 - The tones for each key
- *  dtmf-[star/hash] - These tones are never played but are included for completeness
+ *  dtmf-[str/hsh] - These tones are never played but are included for completeness
  *  [########].MP3 - Any dialled phone numbers. The maximum length of a number is 8 characters.
  *  
  */
@@ -50,7 +50,7 @@
  *                   1.08 should work fine though
  */
 
-#define VOLUME 20 //lower numbers = louder!
+#define VOLUME 10 //lower numbers = louder!
 
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
@@ -99,10 +99,14 @@ boolean dialing;
 void setup(){
   Serial.begin(115200);
 
+//Print debug info about what time the code was uploaded
+  Serial.println(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
+  
   setupMusicPlayer();
-
-  // list files
-  printDirectory(SD.open("/"), 0);
 
     pinMode(ledPin, OUTPUT);              // Sets the digital pin as output.
     digitalWrite(ledPin, HIGH);           // Turn the LED on.
@@ -140,6 +144,9 @@ void keypadEvent(KeypadEvent key){
             search2Play("DIALTONE");
             break;
           default: //otherwise, play the tone for the number dialed
+              if(musicPlayer.playingMusic){
+                  musicPlayer.stopPlaying();
+              } 
             playTone(String(key));
             s += key;
             break;
@@ -222,6 +229,9 @@ void setupMusicPlayer(){
   Serial.println("SD OK!");
   
   musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
+
+  // list files
+  printDirectory(SD.open("/"), 0);
  
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));

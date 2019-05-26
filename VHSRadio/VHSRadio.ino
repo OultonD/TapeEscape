@@ -21,7 +21,7 @@
  *                          ^v
  *                    VS1053 MP3 Decoder -> 5v Stereo Amp => Stereo Speaker
  *  Debug:
- *  To debug, open the serial monitor at 115200 baud
+ *  To debug, open the serial monitor at 9600 baud
  *  
  *  Required Files on the SD Card:
  *  The MP3 playing functions require the files to be named as such:
@@ -83,7 +83,7 @@ Servo s;
 
 #define SERVO_PIN 5
 #define SERVO_START 0
-#define SERVO_END 170 //in degrees
+#define SERVO_END 180 //in degrees
 
 #define AM_FM 7 //AM/FM Switch
 
@@ -115,6 +115,14 @@ bool isFM;
 
 void setup() {
   Serial.begin(9600);
+
+//Print debug info about what time the code was uploaded
+  Serial.print(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
+  
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
      while (1);
