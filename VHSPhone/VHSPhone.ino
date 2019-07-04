@@ -1,4 +1,48 @@
-
+/*
+ * VHS Telephone
+ * Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  A keypad is used to dial a number that the audience member finds
+ *  A corresponding MP3 is played.
+ *  The MP3s are loaded from the SD card in the form "PHONENUMBER.MP3"
+ *  
+ *      NOTE: Phone numbers must be 8 digits or shorter.
+ *  
+ *  Every time a key is pressed, the number is loaded to the stack. 
+ *  When # is pressed, the number is "Dialed" ie, searched for on the SD card
+ *  If found the mp3 is played, if not, play a busy signal.
+ *  The * key is to pick up or hang up. This also clears the stack.
+ *  
+ *  Schematic:
+ *                   Keypad
+ *                      v
+ *  5v USB power --> Arduino -> 5v stereo amp => Stereo speakers
+ *                      v^            ^
+ *                VS1053 MP3 Decoder--|
+ *                      
+ *  Debug:
+ *  When booting, the device plays 2 tones to indicate the speakers
+ *  and SD card are working.
+ *  To debug, open the serial monitor at 115200 baud.
+ *  The expected output is: VS1053 found, SD OK!
+ *  Followed by: a printout of the files on the SD card 
+ *  Every time a key is pressed, the stack is printed.
+ *  As well, every time a number is dialed, the search results
+ *  are displayed.
+ *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  
+ *  BUSY.MP3
+ *  DIALTONE.MP3
+ *  dtmf-[0-9].MP3 - The tones for each key
+ *  dtmf-[str/hsh] - These tones are never played but are included for completeness
+ *  [########].MP3 - Any dialled phone numbers. The maximum length of a number is 8 characters.
+ *  
+ */
 
  /* Included Libraries:
  * Keypad.h - https://github.com/Chris--A/Keypad
@@ -6,7 +50,7 @@
  *                   1.08 should work fine though
  */
 
-#define VOLUME 40 //lower numbers = louder!
+#define VOLUME 10 //lower numbers = louder!
 
 // include SPI, MP3 and SD libraries
 #include <SPI.h>
@@ -55,28 +99,14 @@ boolean dialing;
 void setup(){
   Serial.begin(115200);
 
-  if (! musicPlayer.begin()) { // initialise the music player
-     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
-     while (1);
-  }
-  Serial.println(F("VS1053 found"));
-
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
-  delay(500);
-  if (!SD.begin(CARDCS)) {
-    Serial.println(F("SD failed, or not present"));
-    while (1);  // don't do anything more
-  }
-  Serial.println("SD OK!");
-  musicPlayer.setVolume(VOLUME,VOLUME);
+//Print debug info about what time the code was uploaded
+  Serial.println(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
   
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate SD Card is working
-  
-  // list files
-  printDirectory(SD.open("/"), 0);
- 
-  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
-    Serial.println(F("DREQ pin is not an interrupt pin"));
+  setupMusicPlayer();
 
     pinMode(ledPin, OUTPUT);              // Sets the digital pin as output.
     digitalWrite(ledPin, HIGH);           // Turn the LED on.
@@ -114,6 +144,9 @@ void keypadEvent(KeypadEvent key){
             search2Play("DIALTONE");
             break;
           default: //otherwise, play the tone for the number dialed
+              if(musicPlayer.playingMusic){
+                  musicPlayer.stopPlaying();
+              } 
             playTone(String(key));
             s += key;
             break;
@@ -177,6 +210,31 @@ if(SD.exists(fileName)){
   }
 }
 fileName = "";
+}
+
+void setupMusicPlayer(){
+  if (! musicPlayer.begin()) { // initialise the music player
+     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     while (1);
+  }
+  Serial.println(F("VS1053 found"));
+  musicPlayer.setVolume(VOLUME,VOLUME);
+  
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
+  if (!SD.begin(CARDCS)) {
+    Serial.println(F("SD failed, or not present"));
+    while (1);  // don't do anything more
+  }
+  Serial.println("SD OK!");
+  
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
+
+  // list files
+  printDirectory(SD.open("/"), 0);
+ 
+  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
+    Serial.println(F("DREQ pin is not an interrupt pin"));
 }
 
 /// File listing helper

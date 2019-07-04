@@ -1,3 +1,41 @@
+ /*
+ *  VHS Maquette
+ *  Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  Audience members press 4 buttons in order to hear a clue mp3 (SUCCESS.MP3)
+ *  They then search for 4 buttons (Play, RWD, FFW, Eject). Each button plays a sound.
+ *  Comment out "#define ONE_CHANCE" to allow multiple pushes to play the sound over again
+ *  Fast forward also flashes the "Shop LED". Eject opens up a hatch via servo.
+ *  
+ *  Schematic:
+ *              4x tree buttons  
+ *                  v
+ *  5v 2A PSU -> Arduino Nano -> VS1053 MP3 Player -> Audio isolator -> 5v amplifier -> Speakers
+ *                  ^       |--> LED
+ *                  |       |--> Servo
+ *               4x VCR buttons
+ *  Debug:
+ *  To debug, open the serial monitor at 9600 baud
+ *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  ONE.MP3 - Played when tree button 1 is pressed
+ *  TWO.MP3 -   "     "     "   "     2  "  "
+ *  THREE.MP3 - Tree button 3
+ *  FOUR.MP3 -  Tree button 4
+ *  SUCCESS.MP3 - Played when the right Tree-quence is pressed
+ *  FAILURE.MP3 - Played when the WRONG Tree-quence is pressed
+ *  
+ *  PLAY.MP3    - When the PLAY button is pressed
+ *  REWIND.MP3  - When REWIND is pressed
+ *  FFWD.MP3    - When FAST FORWARD is pressed
+ *  EJECT.MP3   - When EJECT is pressed
+ * 
+ */
+ 
  /* Included 3rd party Libraries:
  * Keypad.h - https://github.com/Chris--A/Keypad
  * Adafruit_VS1053.h **Compiled with version 1.07** - https://github.com/adafruit/Adafruit_VS1053_Library
@@ -33,8 +71,8 @@ char keys[ROWS][COLS] = {
     {'P','R','F','E'} //PLAY, RWD, FFW, EJECT
 };
 
-byte rowPins[ROWS] = {2, 7}; //connect to the row pinouts of the keypad
-byte colPins[COLS] = {A0, A1, A2, A3}; //connect to the column pinouts of the keypad
+byte rowPins[ROWS] = {A0, 2}; //connect to the row pinouts of the keypad
+byte colPins[COLS] = {7, A3, A2, A1}; //connect to the column pinouts of the keypad
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
@@ -53,8 +91,26 @@ int key[] = {1,2,3,4}; //answer key
 Servo s;
 int pos = 0;
 
+//#define ONE_CHANCE //this is the trigger that determines if the play/rwd etc buttons can be pushed more than once. 
+                   //Comment it out to allow multiple presses
+
+bool played = false;
+bool rewound = false;
+bool fastforwarded = false;
+bool ejected = false;
+
+bool readyToReset = false; //if the eject button has been pushed, this flag is set
+
 void setup() {
   Serial.begin(9600);
+
+//Print debug info about what time the code was uploaded
+  Serial.print(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
+  
   // put your setup code here, to run once:
   if (! musicPlayer.begin()) { // initialise the music player
      Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
@@ -62,14 +118,14 @@ void setup() {
   }
   Serial.println(F("VS1053 found"));
 
-  musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
- 
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
   }
   Serial.println("SD OK!");
-  
+  musicPlayer.sineTest(0x44, 50);
   // list files
   printDirectory(SD.open("/"), 0);
   
@@ -85,17 +141,18 @@ void setup() {
   Serial.println("Servo Set");
 
   pinMode(LED, OUTPUT);
-  digitalWrite(LED, HIGH);
+  digitalWrite(LED, LOW);
 
   keypad.addEventListener(keypadEvent);
 }
 
 void loop() {
     char key = keypad.getKey();
-
-    
+    //Serial.println(key);
 }
 
+
+#ifdef ONE_CHANCE
 void keypadEvent(KeypadEvent key){
     switch (keypad.getState()){
     case PRESSED:
@@ -103,21 +160,107 @@ void keypadEvent(KeypadEvent key){
           case '1':
             shiftAnswers();
             answers[3] = 1;
+            easyPlay("ONE.MP3");
             checkResult();
             break;
           case '2':
             shiftAnswers();
             answers[3] = 2;
+            easyPlay("TWO.MP3");
             checkResult();
             break;            
           case '3':
             shiftAnswers();
             answers[3] = 3;
+            easyPlay("THREE.MP3");
             checkResult();
             break;
           case '4':
             shiftAnswers();
             answers[3] = 4;
+            easyPlay("FOUR.MP3");
+            checkResult();
+            break;
+          case 'P':
+            if(!played){
+              played = true;
+            PLAY();
+            }else{
+              Serial.println("Already played");
+            }
+            break;
+          case 'R':
+            if(!rewound){
+            rewound = true;
+            REWIND();              
+            }else{
+              Serial.println("Already rewound");
+            }
+            break;
+          case 'F':
+            if(!fastforwarded){
+              FASTFORWARD();
+              fastforwarded = true; //still not sure if this is a word
+            }else{
+              Serial.println("Already ffwd");
+            }
+            break;
+          case 'E':
+            if(!ejected){
+             EJECT();   
+             ejected = true;
+            }else{
+              Serial.println("Already ejected");
+            }
+            break;
+          default:
+            break;
+         }  
+
+    case RELEASED:
+        break;
+
+    case HOLD:
+        switch(key){
+          case '1':
+            if(readyToReset){
+            resetMaquette();
+            }
+            break;
+        }
+        break;
+
+  }
+}
+#endif
+
+#ifndef ONE_CHANCE
+void keypadEvent(KeypadEvent key){
+    switch (keypad.getState()){
+    case PRESSED:
+         switch (key){
+          case '1':
+            shiftAnswers();
+            answers[3] = 1;
+            easyPlay("ONE.MP3");
+            checkResult();
+            break;
+          case '2':
+            shiftAnswers();
+            answers[3] = 2;
+            easyPlay("TWO.MP3");
+            checkResult();
+            break;            
+          case '3':
+            shiftAnswers();
+            answers[3] = 3;
+            easyPlay("THREE.MP3");
+            checkResult();
+            break;
+          case '4':
+            shiftAnswers();
+            answers[3] = 4;
+            easyPlay("FOUR.MP3");
             checkResult();
             break;
           case 'P':
@@ -140,10 +283,19 @@ void keypadEvent(KeypadEvent key){
         break;
 
     case HOLD:
+        switch(key){
+          case '1':
+            if(readyToReset){
+            resetMaquette();
+            }
+            break;
+        }
         break;
 
   }
 }
+#endif
+
 
 void shiftAnswers() 
 {
@@ -155,6 +307,11 @@ void shiftAnswers()
 
 void checkResult()
 {
+  for(int i = 0; i<4; i++){
+    Serial.print(answers[i]);
+  }
+  Serial.println();
+  result = true;
   for(int i = 0; i<4; i++)
   {
     result = result && (answers[i] == key[i]);
@@ -162,52 +319,78 @@ void checkResult()
   Serial.println(result);
   if(result)
   {
-    //play success file
-    if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
-    Serial.println("Error opening file");
-    }
+      //play success file
+      Serial.println("Success");
+      easyPlay("SUCCESS.MP3");
   }
   else
   {
+    //Play a sound if the wrong tree-quence was pressed
+    //comment this out if you want a rolling stack of presses
     if(answers[0] != 0)
     {
-          if (! musicPlayer.startPlayingFile("SUCCESS.MP3")) {
-            Serial.println("Error opening file");
-          }
+         if(musicPlayer.playingMusic){
+          musicPlayer.stopPlaying();
+         }          
+        if (! musicPlayer.startPlayingFile("FAILURE.MP3")) {
+          Serial.println("Error opening file");
+        }
+        answers[0] = 0;
+        answers[1] = 0;
+        answers[2] = 0;
+        answers[3] = 0;
     }
+    
+  }
+}
+
+void easyPlay(String fileName){
+char c_fileName[fileName.length()+1];
+fileName.toCharArray(c_fileName, fileName.length()+1);
+  if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+   }    
+  if (! musicPlayer.startPlayingFile(c_fileName)) {
+    Serial.println(F("Error opening file"));
   }
 }
   
 void PLAY()
 {
-  if (! musicPlayer.startPlayingFile("PLAY.MP3")) {
-    Serial.println("Error opening file");
-  }
+  Serial.println("Play");
+  easyPlay("PLAY.MP3");
 }
 
 void REWIND()
 {
-  if (! musicPlayer.startPlayingFile("REWIND.MP3")) {
-    Serial.println("Error opening file");
-  }
+  Serial.println(F("Rewind"));
+  easyPlay(F("REWIND.MP3"));
 }
 
 void FASTFORWARD()
 {
-  if (! musicPlayer.startPlayingFile("FASTFORWARD.MP3")) {
-    Serial.println("Error opening file");
-  }
-  for(int i = 0; i<5; i++){
-    digitalWrite(LED, LOW);
-    delay(100);
+  Serial.println(F("Fast Forward"));
+  easyPlay(F("FFWD.MP3"));
+  for(int i = 0; i<3; i++){
     digitalWrite(LED, HIGH);
-    delay(100);
+    delay(500);
+    digitalWrite(LED, LOW);
+    delay(500);
   }
 }
 
 void EJECT()
 {
+  Serial.println(F("Eject"));
+  easyPlay(F("EJECT.MP3"));
   s.write(SERVO_END);
+  readyToReset = true;
+}
+
+void resetMaquette(){
+  Serial.println("Resetting");
+  s.write(SERVO_START);
+  readyToReset = false;
 }
 
 /// File listing helper

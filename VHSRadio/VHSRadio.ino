@@ -1,3 +1,43 @@
+/*
+ *  VHS Radio
+ *  Created by Daniel Oulton
+ *  for Outside the March
+ *  "The Tape Escape"
+ *  
+ *  Usage:
+ *  An LCD displays the frequency the "radio" is tuned to.
+ *  An encoder is used to seek a station that the audience member
+ *  has been told to listen to. 
+ *  When the right station is selected, an MP3 is played.
+ *  MP3s should be in the format [3-4 digits]AM.mp3 OR
+ *  [3-4 digits]FM.mp3. Note that for FM stations, omit the
+ *  decimal in the frequency.
+ *  The "AM/FM" Switch also triggers a servo which rotates a car.
+ *  
+ *  Schematic:
+ *                    Encoder + Switch
+ *                          ^
+ *  5v 2A Wall Wart -> Arduino Nano -> LCD
+ *                          ^v
+ *                    VS1053 MP3 Decoder -> 5v Stereo Amp => Stereo Speaker
+ *  Debug:
+ *  To debug, open the serial monitor at 9600 baud
+ *  
+ *  Required Files on the SD Card:
+ *  The MP3 playing functions require the files to be named as such:
+ *  
+ *  SILENCE.MP3 - 30 seconds of silence, to prevent an infitine loop
+ *  FUZZ[0-9]AM.MP3 - 10 MP3s of static to be played when a file isn't found on AM
+ *  FUZZ[1,3,5,7,9]FM.mp3 - 5 MP3s of static to be played when a file isn't found on FM
+ *  [#]###[AM/FM].MP3 - The "radio stations" are formatted this way. 
+ *                      FM stations count by .2 from 88.1 to 107.9. FM stations are always ODD
+ *                      FM stations are listed WITHOUT the decimal.
+ *                      Example: 89.1fm becomes 891FM.MP3, 107.1FM becomes 1071FM.MP3
+ *                      
+ *                      AM stations count by 10s, from 540 to 1700.
+ *                      Example 680AM.MP3, 1690AM.MP3
+ *  
+ */
 /* Included 3rd Party Libraries:
  * Button.h - https://github.com/madleech/Button
  * LiquidCrystal_PCF8574.h - https://github.com/mathertel/LiquidCrystal_PCF8574
@@ -20,6 +60,8 @@
 // DREQ should be an Int pin, see http://arduino.cc/en/Reference/attachInterrupt
 #define DREQ 3       // VS1053 Data request, ideally an Interrupt pin
 
+#define VOLUME 10
+
 Adafruit_VS1053_FilePlayer musicPlayer = 
   // create breakout-example object!
   Adafruit_VS1053_FilePlayer(BREAKOUT_RESET, BREAKOUT_CS, BREAKOUT_DCS, DREQ, CARDCS);
@@ -32,13 +74,20 @@ LiquidCrystal_PCF8574 lcd(0x27);  // set the LCD address to 0x27 for a 16 chars 
 #include <Encoder.h>
 Encoder enc(2, A2);
 
+#include <Button.h>
+Button encButton(A1);
+bool pwr = false;
+
 #include <Servo.h>
+Servo s;
 
 #define SERVO_PIN 5
 #define SERVO_START 0
-#define SERVO_END 90 //in degrees
+#define SERVO_END 180 //in degrees
 
 #define AM_FM 7 //AM/FM Switch
+
+#define ENCBUTTON A1
 
 #define AMMAX 1700
 #define AMMIN 540
@@ -50,44 +99,134 @@ int amFreq = AMMIN;
 #define FMSTEP 2 //in hundreds of khz
 int fmFreq = FMMIN;
 
-int encLastRead = 0;
-int encCurrRead = 0;
+int encLastRead = 1;
+int encCurrRead = 1;
+
+unsigned long currMillis = 0;
+unsigned long prevMillis = 0;
+int freqDelay = 500; //how long, in ms, do we need to land on a freq before playing?
+int lastFreq = 0; //what was the frequency, last time we checked?
+bool freqFlag = false;
+
+
+bool playingStatic = false;
+bool lastSwitchReading = true;
+bool isFM;
 
 void setup() {
-  Serial.begin(115200);
-  // put your setup code here, to run once:
-  pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
+  Serial.begin(9600);
+
+//Print debug info about what time the code was uploaded
+  Serial.print(F(__FILE__));
+  Serial.print(" Uploaded ");
+  Serial.print(F(__DATE__));
+  Serial.print(" at ");
+  Serial.println(F(__TIME__));
   
-  if(isFM()){
+  if (! musicPlayer.begin()) { // initialise the music player
+     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+     while (1);
+  }
+  Serial.println(F("VS1053 found"));
+
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate VS1053 is working
+  delay(50);
+  if (!SD.begin(CARDCS)) {
+    Serial.println(F("SD failed, or not present"));
+    while (1);  // don't do anything more
+  }
+  Serial.println("SD OK!");
+  musicPlayer.setVolume(VOLUME,VOLUME);
+  
+  musicPlayer.sineTest(0x44, 50);    // Make a tone to indicate SD Card is working
+  
+  // list files
+  printDirectory(SD.open("/"), 0);
+ 
+  if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
+    Serial.println(F("DREQ pin is not an interrupt pin"));
+  setupLCD();
+  // put your setup code here, to run once:
+  
+  encButton.begin();
+  
+  pinMode(AM_FM, INPUT_PULLUP); //0 = AM, 1 = FM;
+
+  isFM = digitalRead(AM_FM);
+  lastSwitchReading = isFM;
+
+  s.attach(SERVO_PIN);
+  rotateCar();
+  if(isFM){
     enc.write(fmFreq);
   }else{
     enc.write(amFreq);
   }
-  
+
+  //musicPlayer.stopPlaying();
+  search2Play("BLANK"); //I literally don't know why this is needed but it is.
+                      //I think the MP3 board needs to play something before the loop starts or it crashes.
+  delay(1000);
+  powerDown();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  readEnc();
-  updateDisplay();
-  if(isFM()){
-    search2Play(String(fmFreq));
-  }else{
-    search2Play(String(amFreq));
+  if(pwr && encButton.pressed()){
+    pwr = false;
   }
+  if(!pwr){
+    powerDown();
+  }
+  
+  isFM = digitalRead(AM_FM);
+//  if(playingStatic && !musicPlayer.playingMusic){
+//    Serial.println(F("Looping static"));
+//    playingStatic = false;
+//    search2Play("STATIC");
+//    playingStatic = true;
+//    delay(100);
+//  }
+  readEnc();
+  int freq = getFreq();
+
+  if(isFM != lastSwitchReading){
+    musicPlayer.stopPlaying();
+    playingStatic = false;
+    rotateCar();
+  }
+  
+  if((freq != lastFreq) || (isFM != lastSwitchReading)){
+  updateDisplay();
+  currMillis = millis(); //what time did we land on this freq?
+ if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+  }
+  playingStatic = false;
+  freqFlag = true; //let your freq flag fly
+  }
+  
+  if(freq == lastFreq && (millis() - currMillis) >= freqDelay && freqFlag){
+     search2Play(String(freq));
+     freqFlag = false; //to prevent an infinite loop;
+  }
+  lastSwitchReading = isFM;
+  lastFreq = freq;
+  //Serial.println("Loop");
+  //delay(50);
 }
 
 void updateDisplay(){
   lcd.home();
   lcd.clear();
-  if(isFM()){
+  if(isFM){
     if(fmFreq >999){
       lcd.setCursor(1,0);
     }else{
       lcd.setCursor(2,0);
     }
     float freq = fmFreq/10.0;
-    String s = String(freq);
+    String s = String(freq,1);
     s += "FM";
     lcd.print(s);
   }else{
@@ -103,38 +242,51 @@ void updateDisplay(){
 }
 
 int search2Play(String str){
-Serial.print("entering search: ");
+Serial.print(F("entering search: "));
 String fileName = str;
 if(isFM){
-  fileName.concat("FM");
+  fileName.concat(F("FM.MP3"));
 }else{
-  fileName.concat("AM");
+  fileName.concat(F("AM.MP3"));
 }
-fileName.concat(".MP3");
 char c_fileName[fileName.length()+1];
 fileName.toCharArray(c_fileName, fileName.length()+1);
 Serial.println(c_fileName);
-if(SD.exists(fileName)){
+if(SD.exists(c_fileName)){
   Serial.println("Found File");
   if(musicPlayer.playingMusic){
     musicPlayer.stopPlaying();
   }
   if (! musicPlayer.startPlayingFile(c_fileName)) {
-  Serial.println("Error opening file");
+  Serial.println(F("Error opening file"));
   return 1;
   }
-}
-else{
-  search2Play("STATIC");
+  playingStatic = false;
+}else{
+  Serial.println(F("File not found. Playing static"));
+  if(!playingStatic){
+  String radioStatic = "FUZZ";
+  if(isFM){
+    radioStatic.concat(fmFreq%10);
+  }else{
+    radioStatic.concat(amFreq/10%10);
+  }
+  search2Play(radioStatic);
+  playingStatic = true;
+  }else{
+  Serial.println(F("Already playing static, skipping"));
+  }
 }
 fileName = "";
 return 0;
 }
 
-void readEnc(){
-  encCurrRead = enc.read();
-  
-  if(isFM()){ //FM dial
+bool readEnc(){
+  encCurrRead = enc.read()/2;
+  if(encCurrRead == encLastRead){
+    return 0;
+  }
+  if(isFM){ //FM dial
     if(encCurrRead > encLastRead){
       fmFreq += FMSTEP;
     }else if(encCurrRead < encLastRead){
@@ -162,10 +314,118 @@ void readEnc(){
     Serial.println(amFreq);
   }
   encLastRead = encCurrRead;
+  delay(100);
+  return 1;
 }
 
-bool isFM()
+void setupLCD()
 {
-  return digitalRead(AM_FM);
+    // See http://playground.arduino.cc/Main/I2cScanner
+  Wire.begin();
+  Wire.beginTransmission(0x27);
+  int error = Wire.endTransmission();
+  Serial.print(error);
+
+  if (error == 0) {
+    Serial.println(F(" - LCD found."));
+
+  } else {
+    Serial.println(F(" - LCD not found."));
+  } 
+
+  lcd.begin(16, 2); // initialize the lcd
+  lcd.setBacklight(255);
+  lcd.home(); lcd.clear(); lcd.noCursor();
+  lcd.print("Hello.");
+  delay(250);
+  lcd.clear();
 }
+
+/// File listing helper
+void printDirectory(File dir, int numTabs) {
+   while(true) {
+     
+     File entry =  dir.openNextFile();
+     if (! entry) {
+       // no more files
+       //Serial.println("**nomorefiles**");
+       break;
+     }
+     for (uint8_t i=0; i<numTabs; i++) {
+       Serial.print('\t');
+     }
+     Serial.print(entry.name());
+     if (entry.isDirectory()) {
+       Serial.println("/");
+       printDirectory(entry, numTabs+1);
+     } else {
+       // files have sizes, directories do not
+       Serial.print("\t\t");
+       Serial.println(entry.size(), DEC);
+     }
+     entry.close();
+   }
+}
+
+int getFreq(){
+  if(isFM){
+    return fmFreq;
+  }else{
+    return amFreq;
+  }
+}
+
+void rotateCar(){
+  if(isFM){
+    s.write(SERVO_START);
+  }else{
+    s.write(SERVO_END);
+  }
+}
+
+void powerDown(){
+  Serial.println(F("Powering down"));
+  if(musicPlayer.playingMusic){
+    musicPlayer.stopPlaying();
+  }
+  playingStatic = false;
+  lcd.clear();
+  lcd.setCursor(3,0);
+  lcd.print("Goodbye.");
+  delay(2500);
+  lcd.clear();
+  lcd.setBacklight(0);
+  amFreq = AMMIN;
+  fmFreq = FMMIN;
+  bool pwrBtn = false;
+  do{
+    pwrBtn = encButton.pressed(); //wait for the power button to be pressed
+  }while(!pwrBtn);
+  Serial.println(F("Powering up"));
+  lcd.setBacklight(255);
+  delay(700);
+  pwr = true;
+}
+
+//bool isFM()
+//{
+//  bool reading = digitalRead(AM_FM);
+//  Serial.println(reading);
+//  return digitalRead(reading);
+//}
+//
+//bool switchChanged()
+//{
+//  bool reading = isFM();
+//  if(lastSwitchReading == reading){
+//    //Serial.println("Switch unchanged");
+//    return 0;
+//  }else{
+//    lastSwitchReading = reading;
+//    Serial.print("Switch changed to ");
+//    Serial.println(reading);
+//    return 1;
+//  }
+//}
+
 
