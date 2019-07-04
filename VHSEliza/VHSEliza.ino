@@ -194,7 +194,7 @@ void setQuestions() // ZERO INDEXED, SORRY
 //  pathList[0].setQuestion(1, "Question 2:", "True or False?");
 //  pathList[0].setQuestion(2, "Question 3:", "True or False?");
 //  pathList[0].setQuestion(3, "Question 4:", "True or False?");
-  pathList[0].setCorrectResult("Grmmys Gr8st Vol2");
+  pathList[0].setCorrectResult("Grammys Greatest Hits Vol 2");
   pathList[0].setIncorrectResult("Amelie");
   bool key0[] = {false, false, true, true};
   pathList[0].setAnswerKey(key0);
@@ -293,7 +293,7 @@ void giveResult(int p)
   lcd.home();
   lcd.clear();
   lcd.setCursor(3,0);
-  lcd.print("Thinking...");
+  lcd.print("Calculating...");
   for(int i = 0; i<2; i++)
   {
     for(int j = 0; j<3; j++)
@@ -326,9 +326,14 @@ void giveResult(int p)
         int rLen = result.length();
         if(rLen > 16){
           for(int i = 0; i<3; i++){ //number of times to scroll
-            lcd.setCursor(3,0); //Centre text
-            lcd.print("They rent:");
+            lcd.setCursor(0,0); //Centre text
+            lcd.print("Perfect Score!");
             lcd.setCursor(0,1); //second line
+            lcd.print("They Rent...");
+            delay(3000);
+            lcd.clear();
+            delay(300);
+            lcd.setCursor(0,1);
             lcd.print(result);
             delay(1000);
             for(int j = 0; j<(rLen-16); j++){ //scroll remaining characters
@@ -340,15 +345,25 @@ void giveResult(int p)
             delay(300);
             lcd.setCursor(0,1);
           }
-        lcd.setCursor(3,0); //Centre text
-        lcd.print("They rent:");
+        lcd.setCursor(0,0); //Centre text
+        lcd.print("Perfect Score!");
+        lcd.setCursor(0,1); //second line
+        lcd.print("They Rent...");
+        delay(3000);
+        lcd.clear();
+        delay(300);
         lcd.setCursor(0,1); //second line
         lcd.print(result);
         }else{
-        lcd.setCursor(3,0); //Centre text
-        lcd.print("They rent:");
+        lcd.setCursor(0,0); //Centre text
+        lcd.print("Perfect Score!");
+        lcd.setCursor(0,1); //second line
+        lcd.print("They rent...");
         lcd.setCursor(0,1); //second line
         lcd.print(result);
+        delay(3000);
+        lcd.clear();
+        delay(300);
         }
   }
   else //incorrect case
@@ -357,9 +372,14 @@ void giveResult(int p)
         int rLen = result.length();
         if(rLen > 16){
           for(int i = 0; i<3; i++){ //number of times to scroll
-            lcd.setCursor(3,0); //Centre text
-            lcd.print("They rent:");
-            lcd.setCursor(0,1); //second line
+            lcd.setCursor(0,0); //Centre text
+            lcd.print("LIES! LIES LIES!");
+            lcd.setCursor(0,1);
+            lcd.print("They rent...");
+            delay(3000);
+        lcd.clear();
+        delay(300);
+        lcd.setCursor(0,1); //second line
             lcd.print(result);
             delay(1000);
             for(int j = 0; j<(rLen-16); j++){ //scroll remaining characters
@@ -371,16 +391,26 @@ void giveResult(int p)
             delay(300);
             lcd.setCursor(0,1);
           }
-        lcd.setCursor(3,0); //Centre text
-        lcd.print("They rent:");
+        lcd.setCursor(0,0); //Centre text
+        lcd.print("LIES! LIES LIES!");
+            lcd.setCursor(0,1);
+            lcd.print("They rent...");
+            delay(3000);
+        lcd.clear();
+        delay(300);
         lcd.setCursor(0,1); //second line
-        lcd.print(result);
+            lcd.print(result);
         }else{
-        lcd.setCursor(3,0); //Centre text
-        lcd.print("They rent:");
+        lcd.setCursor(0,0); //Centre text
+        lcd.print("LIES! LIES LIES!");
+            lcd.setCursor(0,1);
+            lcd.print("They rent...");
+            delay(3000);
+        lcd.clear();
+        delay(300);
         lcd.setCursor(0,1); //second line
-        lcd.print(result);
-        }
+            lcd.print(result);
+                }
   }
 }
 
@@ -399,7 +429,7 @@ void pulse()
     }
     
     if(fadeDir)
-    {
+     {
       brightness += fadeIncrement;
     }
     else
