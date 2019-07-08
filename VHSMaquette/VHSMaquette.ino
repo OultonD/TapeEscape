@@ -68,7 +68,7 @@ const byte ROWS = 2; //four rows
 const byte COLS = 4; //three columns
 char keys[ROWS][COLS] = {
     {'1','2','3','4'},
-    {'P','R','F','E'} //PLAY, RWD, FFW, EJECT
+    {'R','P','F','E'} //PLAY, RWD, FFW, EJECT
 };
 
 byte rowPins[ROWS] = {A0, 2}; //connect to the row pinouts of the keypad
@@ -130,7 +130,7 @@ void setup() {
   printDirectory(SD.open("/"), 0);
   
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(40,40);
+  musicPlayer.setVolume(10,10);
 
   if (! musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT))
     Serial.println(F("DREQ pin is not an interrupt pin"));
@@ -371,11 +371,31 @@ void FASTFORWARD()
 {
   Serial.println(F("Fast Forward"));
   easyPlay(F("FFWD.MP3"));
-  for(int i = 0; i<3; i++){
-    digitalWrite(LED, HIGH);
-    delay(500);
+  while(musicPlayer.playingMusic)
+  {
+    yield();
+  }
+  delay(1000);
+  
+  easyPlay(F("FLICKER.MP3"));
+  for(int i = 0; i<2; i++){
+    analogWrite(LED, 255);
+    delay(50);
+    analogWrite(LED, 200);
+    delay(50);
+    analogWrite(LED, 255);
+    delay(40);
+    analogWrite(LED, 128);
+    delay(80);
+    analogWrite(LED, 255);
+    delay(20);
+    analogWrite(LED, 64);
+    delay(70);
+    analogWrite(LED, 255);
+    delay(40);
+    analogWrite(LED, 64);
+    delay(70);
     digitalWrite(LED, LOW);
-    delay(500);
   }
 }
 
@@ -383,6 +403,11 @@ void EJECT()
 {
   Serial.println(F("Eject"));
   easyPlay(F("EJECT.MP3"));
+  while(musicPlayer.playingMusic)
+  {
+    yield();
+  }
+  delay(1000);
   s.write(SERVO_END);
   readyToReset = true;
 }
