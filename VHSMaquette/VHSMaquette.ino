@@ -68,7 +68,7 @@ const byte ROWS = 2; //four rows
 const byte COLS = 4; //three columns
 char keys[ROWS][COLS] = {
     {'1','2','3','4'},
-    {'R','P','F','E'} //PLAY, RWD, FFW, EJECT
+    {'F','P','R','E'} //EDIT THIS LINE TO ADJUST WHICH BUTTONS DO WHAT
 };
 
 byte rowPins[ROWS] = {A0, 2}; //connect to the row pinouts of the keypad
